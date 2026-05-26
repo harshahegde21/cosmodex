@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
+    types: [opened, closed, synchronize] # Listen for opening, closing (merging), and updating PRs
     branches: [ "main" ]
 
 jobs:
@@ -17,6 +18,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      # --- NOTIFICATION: PR OPENED ---
+      - name: Discord Alert - PR Opened
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        run: |
+          MSG="🚀 **New Pull Request!** \n**Author:** ${{ github.actor }}\n**Title:** ${{ github.event.pull_request.title }}\n**Link:** ${{ github.event.pull_request.html_url }}"
+          curl -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
@@ -38,23 +46,22 @@ jobs:
       - name: Run TypeScript Type Check
         run: pnpm exec tsc --noEmit
 
-      - name: Discord Alert on Failure
-        if: failure() && github.event_name == 'push'
+      # --- NOTIFICATION: BUILD FAILED ---
+      - name: Discord Alert - Quality Gate Failed
+        if: failure() 
         run: |
-          curl -H "Content-Type: application/json" \
-          -d '{"content": "🚨 **CRITICAL:** The build failed the quality gate on the `main` branch! Deployment blocked."}' \
-          ${{ secrets.DISCORD_WEBHOOK }}
+          MSG="🚨 **CRITICAL: Quality Gate Failed!**\nCode from **${{ github.actor }}** failed linting or type-checking. Deployment blocked.\n**Check logs:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" ${{ secrets.DISCORD_WEBHOOK }}
 
   # ---------------------------------------------------------
   # JOB 2: Vercel Production Deployment
   # ---------------------------------------------------------
   deploy-production:
     name: Deploy to Vercel
-    needs: lint-and-typecheck # This forces the deployment to wait for Job 1
+    needs: lint-and-typecheck
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     
-    # Expose the Vercel project variables to all steps in this job
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -63,7 +70,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # We must install pnpm here too, so Vercel uses it during the build step
+      # --- NOTIFICATION: PR MERGED / DEPLOY STARTING ---
+      - name: Discord Alert - Merge & Deploy Started
+        run: |
+          MSG="✅ **Code Merged to Main!**\nStarting Vercel Production Deployment for **${{ github.repository }}**..."
+          curl -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
@@ -80,3 +92,17 @@ jobs:
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # --- NOTIFICATION: DEPLOY SUCCESS ---
+      - name: Discord Alert - Deploy Success
+        if: success()
+        run: |
+          MSG="🎉 **Deployment Successful!**\nYour latest code is now live in production."
+          curl -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" ${{ secrets.DISCORD_WEBHOOK }}
+
+      # --- NOTIFICATION: DEPLOY FAILED ---
+      - name: Discord Alert - Deploy Failed
+        if: failure()
+        run: |
+          MSG="🔥 **URGENT: Deployment Failed!**\nThe Vercel build crashed during deployment.\n**Check Vercel Logs:** https://vercel.com/${{ secrets.VERCEL_ORG_ID }}"
+          curl -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" ${{ secrets.DISCORD_WEBHOOK }}
