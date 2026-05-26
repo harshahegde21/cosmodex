@@ -1,6 +1,6 @@
 module.exports = {
   "*.{js,jsx,ts,tsx}": [
-    "eslint --fix"
+    "eslint --fix --max-warnings=0"
   ],
   "**/*.{ts,tsx}": () => "tsc -p tsconfig.json --noEmit"
 };
