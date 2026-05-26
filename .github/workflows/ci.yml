@@ -1,4 +1,4 @@
-name: CI Quality Gate & Alert
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,6 +7,9 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # ---------------------------------------------------------
+  # JOB 1: The Quality Gate
+  # ---------------------------------------------------------
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
@@ -15,20 +18,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 1. Install pnpm FIRST
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9 # You can specify a version, 9 is standard for Node 20
+          version: 9
 
-      # 2. Setup Node with pnpm caching
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      # 3. Use pnpm for all commands
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
@@ -42,5 +42,41 @@ jobs:
         if: failure() && github.event_name == 'push'
         run: |
           curl -H "Content-Type: application/json" \
-          -d '{"content": "🚨 **CRITICAL:** The build is failing on the `main` branch! Someone might have pushed directly or merged a broken PR. Fix immediately!"}' \
+          -d '{"content": "🚨 **CRITICAL:** The build failed the quality gate on the `main` branch! Deployment blocked."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
+
+  # ---------------------------------------------------------
+  # JOB 2: Vercel Production Deployment
+  # ---------------------------------------------------------
+  deploy-production:
+    name: Deploy to Vercel
+    needs: lint-and-typecheck # This forces the deployment to wait for Job 1
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    # Expose the Vercel project variables to all steps in this job
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # We must install pnpm here too, so Vercel uses it during the build step
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
