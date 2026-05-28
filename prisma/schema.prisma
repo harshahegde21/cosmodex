@@ -1,0 +1,319 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model admin_activity_log {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actor_id       String?   @db.Uuid
+  actor_role     String?
+  section        String?
+  action         String?
+  target_table   String?
+  target_id      String?   @db.Uuid
+  old_value_json Json?
+  new_value_json Json?
+  ip_address     String?
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  users          users?    @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model arena_questions {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_by        String?             @db.Uuid
+  difficulty        String
+  topic             String?
+  language_code     String?
+  problem_text      String
+  test_cases_json   Json?               @default("[]")
+  hints_json        Json?               @default("[]")
+  time_limit_secs   Int?
+  xp_reward         Int?                @default(0)
+  is_active         Boolean?            @default(true)
+  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  users             users?              @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  arena_submissions arena_submissions[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model arena_sessions {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String              @db.Uuid
+  language_id         String              @db.Uuid
+  difficulty          String?
+  topic_filter        String?
+  questions_solved    Int?                @default(0)
+  questions_attempted Int?                @default(0)
+  total_xp            Int?                @default(0)
+  started_at          DateTime?           @default(now()) @db.Timestamptz(6)
+  ended_at            DateTime?           @db.Timestamptz(6)
+  languages           languages           @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users               users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  arena_submissions   arena_submissions[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model arena_stats {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String    @unique @db.Uuid
+  total_solved       Int?      @default(0)
+  current_streak     Int?      @default(0)
+  best_streak        Int?      @default(0)
+  total_xp           Int?      @default(0)
+  favourite_language String?
+  last_played_at     DateTime? @db.Timestamptz(6)
+  users              users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model arena_submissions {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String          @db.Uuid
+  arena_question_id String          @db.Uuid
+  arena_session_id  String          @db.Uuid
+  code_text         String?
+  language_code     String?
+  is_correct        Boolean?        @default(false)
+  stdout            String?
+  stderr            String?
+  exec_time_ms      Int?
+  test_cases_passed Int?            @default(0)
+  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  arena_questions   arena_questions @relation(fields: [arena_question_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  arena_sessions    arena_sessions  @relation(fields: [arena_session_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model badges {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String        @unique
+  description   String?
+  icon_url      String?
+  badge_type    String?
+  section       String?
+  criteria_json Json?         @default("{}")
+  user_badges   user_badges[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model enrollments {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String    @db.Uuid
+  language_id       String    @db.Uuid
+  current_module_id String?   @db.Uuid
+  enrolled_at       DateTime? @default(now()) @db.Timestamptz(6)
+  is_active         Boolean?  @default(true)
+  modules           modules?  @relation(fields: [current_module_id], references: [id], onUpdate: NoAction)
+  languages         languages @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model languages {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code           String           @unique
+  name           String
+  icon_url       String?
+  is_active      Boolean?         @default(true)
+  display_order  Int?             @default(0)
+  arena_sessions arena_sessions[]
+  enrollments    enrollments[]
+  modules        modules[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model module_completions {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String    @db.Uuid
+  module_id       String    @db.Uuid
+  total_xp_earned Int?      @default(0)
+  total_attempts  Int?      @default(0)
+  completed_at    DateTime? @default(now()) @db.Timestamptz(6)
+  modules         modules   @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model modules {
+  id                   String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  language_id          String               @db.Uuid
+  created_by           String?              @db.Uuid
+  module_number        Int
+  title                String
+  description          String?
+  icon_svg             String?
+  is_skippable         Boolean?             @default(false)
+  is_locked_by_default Boolean?             @default(true)
+  is_published         Boolean?             @default(false)
+  created_at           DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?            @default(now()) @db.Timestamptz(6)
+  enrollments          enrollments[]
+  module_completions   module_completions[]
+  users                users?               @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  languages            languages            @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  progress             progress[]
+  questions            questions[]
+  skip_test_attempts   skip_test_attempts[]
+  topics               topics[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model progress {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String    @db.Uuid
+  module_id       String    @db.Uuid
+  question_id     String    @db.Uuid
+  is_correct      Boolean?  @default(false)
+  attempts_count  Int?      @default(0)
+  time_taken_secs Int?
+  xp_earned       Int?      @default(0)
+  completed_at    DateTime? @default(now()) @db.Timestamptz(6)
+  modules         modules   @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  questions       questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model questions {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  module_id       String        @db.Uuid
+  created_by      String?       @db.Uuid
+  section         String?
+  question_type   String?
+  difficulty      String?
+  problem_text    String
+  test_cases_json Json?         @default("[]")
+  hints_json      Json?         @default("[]")
+  time_limit_secs Int?
+  xp_reward       Int?          @default(0)
+  display_order   Int?          @default(0)
+  progress        progress[]
+  users           users?        @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  modules         modules       @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  submissions     submissions[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model roles {
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                  String                  @unique
+  description           String?
+  permissions_json      Json?                   @default("{}")
+  created_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  user_role_assignments user_role_assignments[]
+}
+
+model schema_migrations {
+  version String @id @unique(map: "schema_migrations_version_idx") @db.VarChar(14)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model skip_test_attempts {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String    @db.Uuid
+  module_id    String    @db.Uuid
+  passed       Boolean?  @default(false)
+  score        Int?      @default(0)
+  max_score    Int?      @default(0)
+  attempted_at DateTime? @default(now()) @db.Timestamptz(6)
+  modules      modules   @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model submissions {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String    @db.Uuid
+  question_id       String    @db.Uuid
+  code_text         String?
+  language_code     String?
+  is_correct        Boolean?  @default(false)
+  stdout            String?
+  stderr            String?
+  exec_time_ms      Int?
+  memory_used_kb    Int?
+  test_cases_passed Int?      @default(0)
+  test_cases_total  Int?      @default(0)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  questions         questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model topics {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  module_id      String   @db.Uuid
+  created_by     String?  @db.Uuid
+  title          String
+  avatar_script  String?
+  content_json   Json?    @default("{}")
+  animation_json Json?    @default("{}")
+  display_order  Int?     @default(0)
+  is_published   Boolean? @default(false)
+  users          users?   @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  modules        modules  @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_badges {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id   String    @db.Uuid
+  badge_id  String    @db.Uuid
+  earned_at DateTime? @default(now()) @db.Timestamptz(6)
+  badges    badges    @relation(fields: [badge_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_role_assignments {
+  id                                             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                                        String    @db.Uuid
+  role_id                                        String    @db.Uuid
+  assigned_by                                    String?   @db.Uuid
+  assigned_at                                    DateTime? @default(now()) @db.Timestamptz(6)
+  is_active                                      Boolean?  @default(true)
+  users_user_role_assignments_assigned_byTousers users?    @relation("user_role_assignments_assigned_byTousers", fields: [assigned_by], references: [id], onUpdate: NoAction)
+  roles                                          roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_user_role_assignments_user_idTousers     users     @relation("user_role_assignments_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  id                                                             String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username                                                       String
+  email                                                          String                  @unique
+  password_hash                                                  String?
+  auth_provider                                                  String?
+  role                                                           String?                 @default("student")
+  xp_total                                                       Int?                    @default(0)
+  level                                                          Int?                    @default(1)
+  avatar_url                                                     String?
+  is_active                                                      Boolean?                @default(true)
+  created_at                                                     DateTime?               @default(now()) @db.Timestamptz(6)
+  last_login_at                                                  DateTime?               @db.Timestamptz(6)
+  admin_activity_log                                             admin_activity_log[]
+  arena_questions                                                arena_questions[]
+  arena_sessions                                                 arena_sessions[]
+  arena_stats                                                    arena_stats?
+  arena_submissions                                              arena_submissions[]
+  enrollments                                                    enrollments[]
+  module_completions                                             module_completions[]
+  modules                                                        modules[]
+  progress                                                       progress[]
+  questions                                                      questions[]
+  skip_test_attempts                                             skip_test_attempts[]
+  submissions                                                    submissions[]
+  topics                                                         topics[]
+  user_badges                                                    user_badges[]
+  user_role_assignments_user_role_assignments_assigned_byTousers user_role_assignments[] @relation("user_role_assignments_assigned_byTousers")
+  user_role_assignments_user_role_assignments_user_idTousers     user_role_assignments[] @relation("user_role_assignments_user_idTousers")
+}

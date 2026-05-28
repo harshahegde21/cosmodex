@@ -5,10 +5,10 @@ consumers:
   - username: DASHBOARD
   - username: anon
     keyauth_credentials:
-      - key: ${{SUPABASE_ANON_KEY}}
+      - key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlLWRlbW8iLCJpYXQiOjE2NDE3NjkyMDAsImV4cCI6MTg5MzQ1NjAwMH0.vh1-dwqULmDALnkn7fUv96Bl3iNGItPua0efQ5vGdoU
   - username: service_role
     keyauth_credentials:
-      - key: ${{SUPABASE_SERVICE_KEY}}
+      - key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UtZGVtbyIsImlhdCI6MTY0MTc2OTIwMCwiZXhwIjoxODkzNDU2MDAwfQ.ZhKwqCg2ywVpVox0tycMMG7XUhavS0REfb_R1hUSoec
 
 acls:
   - consumer: anon
