@@ -1,4 +1,5 @@
 import { OAuthLogin } from '@/features/auth/components/OAuthLogin';
+import { ManualLoginForm } from '@/features/auth/components/ManualLoginForm';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
@@ -35,7 +36,23 @@ export default async function LoginPage() {
             <LogoutButton />
           </div>
         ) : (
-          <OAuthLogin />
+          <div className="flex flex-col gap-6">
+            <ManualLoginForm />
+            <div className="flex items-center w-full">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-4 text-gray-500 font-medium">OR</span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+            <div className="flex flex-col items-center">
+              <OAuthLogin />
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-600">
+              Don&apos;t have an account?{' '}
+              <a href="/signup" className="text-blue-600 hover:underline">
+                Sign up
+              </a>
+            </p>
+          </div>
         )}
       </div>
     </main>
