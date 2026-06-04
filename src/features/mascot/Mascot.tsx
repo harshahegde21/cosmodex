@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { useMascotStore } from "@/hooks/useMascotStore";
-import mascotBody from "../mascot/Mascot - Without Eyes.png";
-import mascotPupil from "../mascot/Mascot - Pupil.png";
+import mascotBody from "./Mascot - Without Eyes.png";
+import mascotPupil from "./Mascot - Pupil.png";
 
 // Responsive Viewport Positions
 const layoutVariants: Record<string, { top: string; left: string; x: string; y: string }> = {
