@@ -46,4 +46,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local build artifacts
+build.log
+build-output.txt
+package-lock.json
+
 /src/generated/prisma
