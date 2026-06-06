@@ -1,68 +1,70 @@
-"use client"
-import Image from "next/image";
-import { useMascotStore } from "@/hooks/useMascotStore";
+import Navbar from "@/components/landing/NavbarNew";
+import HeroSection from "@/components/landing/HeroSection";
+import CoursesSection from "@/components/landing/CoursesSection";
+import BattleArenaSection from "@/components/landing/BattleArenaSection";
+import LevelUpSection from "@/components/landing/LevelUpSection";
+import JoinClubSection from "@/components/landing/JoinClubSection";
+import DevsSection from "@/components/landing/DevsSection";
+import Footer from "@/components/landing/Footer";
+import ScrollAnimation from "@/components/landing/ScrollAnimation";
+import SmoothScroll from "@/components/landing/SmoothScroll";
+import ClickParticles from "@/components/landing/ClickParticles";
 
 export default function Home() {
-  const { setMessage, setPosition } = useMascotStore()
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Hello World CI/CD Workflow Test
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex justify-center items-center gap-2">
+    <main
+      style={{
+        background: "#050508",
+        minHeight: "100vh",
+        overflowX: "hidden",
+      }}
+    >
+      {/*
+       * Layer order (z-index):
+       *   0   — #050508 body background
+       *   1   — ScrollAnimation canvas (fixed, 240-frame scroll animation)
+       *   2   — ScrollAnimation vignette overlay (fixed)
+       *   3   — All page sections (scroll normally, semi-transparent)
+       *   3   — RisingStars canvas (within JoinClub + Devs sections)
+       *   50  — Navbar pill
+       *   200 — Loading screen (inside ScrollAnimation)
+       *  9999 — ClickParticles canvas (fixed, pointer-events: none)
+       */}
 
-          <div className="flex flex-col gap-4 text-base font-medium sm:flex-row" onClick={() => { setMessage("Hello from Component"); setPosition("center") }}>
-            <a
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+      {/* Scroll-driven 240-frame animation — fixed behind all content */}
+      <ScrollAnimation />
 
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Center
-            </a>
+      {/* Lenis smooth scroll (expo ease-out, duration 1.4s) */}
+      <SmoothScroll />
 
-          </div>
-          <div className="flex flex-col gap-4 text-base font-medium sm:flex-row" onClick={() => { setMessage("Hello from Component"); setPosition("bottom-right") }}>
-            <a
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+      {/* Navigation — Learn / Practice / Pricing / Sign Up */}
+      <Navbar />
 
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Bottom Right
-            </a>
-          </div>
+      {/* Click particle burst effect */}
+      <ClickParticles />
 
-        </div>
-      </main>
-    </div>
+      {/*
+       * ── ANIMATION ZONE ───────────────────────────────────────────────
+       * Sections with semi-transparent backgrounds so the scroll animation
+       * bleeds through underneath. The animation canvas fades out after
+       * the last section in ANIMATION_SECTION_IDS in ScrollAnimation.tsx.
+       */}
+      <HeroSection />
+      <CoursesSection />
+      <BattleArenaSection />
+      <LevelUpSection />
+
+      {/*
+       * ── SOLID SECTIONS ───────────────────────────────────────────────
+       * JoinClub, Devs, and Footer sit after the animation zone and use
+       * more opaque backgrounds for readability.
+       */}
+      <JoinClubSection />
+      <DevsSection />
+
+      <div style={{ position: "relative", zIndex: 3, background: "#050508" }}>
+        <Footer />
+      </div>
+    </main>
   );
 }
