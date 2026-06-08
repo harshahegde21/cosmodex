@@ -14,7 +14,7 @@
  *   - Badge               → 14px max travel
  */
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
 /** Lerp toward target each frame for smooth parallax */
@@ -23,7 +23,7 @@ function lerp(a: number, b: number, t: number) {
 }
 
 export default function HeroSection() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = true;
   const sectionRef = useRef<HTMLElement>(null);
 
   // Ref-driven parallax positions (avoid React re-renders for every mousemove)
@@ -40,10 +40,6 @@ export default function HeroSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const section = sectionRef.current;
@@ -218,11 +214,12 @@ export default function HeroSection() {
             <span
               style={{
                 fontSize: "11px",
-                fontWeight: 700,
-                letterSpacing: "0.09em",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 color: "#ff6ba8",
-                fontFamily: "var(--font-display), 'Space Grotesk', sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
+                textRendering: "optimizeLegibility",
               }}
             >
               v1 Public Beta
@@ -236,14 +233,17 @@ export default function HeroSection() {
             animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 32 }}
             transition={{ duration: 0.9, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              fontSize: "clamp(48px, 7.5vw, 96px)",
-              fontWeight: 700,
-              lineHeight: 1.02,
-              letterSpacing: "-0.04em",
+              fontSize: "clamp(42px, 6.5vw, 80px)",
+              fontWeight: 400,
+              lineHeight: 1.12,
+              letterSpacing: "0.04em",
               marginBottom: "24px",
               color: "#ffffff",
               willChange: "transform",
-              fontFamily: "var(--font-display), 'Space Grotesk', sans-serif",
+              fontFamily: "var(--font-display), sans-serif",
+              textRendering: "optimizeLegibility",
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
             }}
           >
             Start Your Coding
@@ -265,7 +265,7 @@ export default function HeroSection() {
               margin: "0 auto 44px",
               fontWeight: 400,
               willChange: "transform",
-              fontFamily: "var(--font-body), 'Plus Jakarta Sans', sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Learn to code through interactive courses, battle challenges, and
@@ -319,8 +319,9 @@ export default function HeroSection() {
               marginTop: "28px",
               fontSize: "12px",
               color: "rgba(240,230,255,0.28)",
-              fontFamily: "var(--font-display), sans-serif",
-              letterSpacing: "0.05em",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
+              letterSpacing: "0.04em",
+              fontWeight: 400,
             }}
           >
             {/* Free to start · No credit card · Join thousands of learners */}
@@ -348,11 +349,11 @@ export default function HeroSection() {
           <span
             style={{
               fontSize: "10px",
-              fontWeight: 600,
+              fontWeight: 500,
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               color: "rgba(240,230,255,0.25)",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Scroll to explore

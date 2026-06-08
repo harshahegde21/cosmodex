@@ -184,7 +184,6 @@ export default function ClickParticles() {
       window.removeEventListener("click", handleClick);
       cancelAnimationFrame(rafRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

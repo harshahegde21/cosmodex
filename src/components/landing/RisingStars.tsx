@@ -107,7 +107,6 @@ export default function RisingStars({
         // Fade in as it rises from bottom half, fade out near top
         const progress = 1 - star.y / height;          // 0 at bottom → 1 at top
         const fadeIn = Math.min(progress * 3, 1);      // first third: fade in
-        const fadeOut = Math.max(0, (1 - progress) * 3 - 2); // last third: fade out
         const lifecycle = Math.min(fadeIn, 1) * (progress > 0.67 ? Math.max(1 - (progress - 0.67) * 3, 0) : 1);
 
         // Twinkle

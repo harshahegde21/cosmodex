@@ -131,14 +131,8 @@ export default function CoursesSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const [search, setSearch] = useState("");
 
-  const [activeCategory, setActiveCategory] = useState("All");
-
-  const CATEGORIES = ["All", "Popular", "Web Dev", "Data Science", "AI", "Games"];
-
   const filtered = courses.filter((c) => {
-    const matchSearch = search === "" || c.title.toLowerCase().includes(search.toLowerCase());
-    const matchCat = activeCategory === "All" || c.category === activeCategory;
-    return matchSearch && matchCat;
+    return search === "" || c.title.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
@@ -186,8 +180,8 @@ export default function CoursesSection() {
             style={{
               fontSize: "clamp(32px, 5vw, 58px)",
               fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -203,7 +197,7 @@ export default function CoursesSection() {
               maxWidth: "460px",
               margin: "0 auto",
               lineHeight: 1.65,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Pick a language, start learning, and earn ✦ as you go.
@@ -243,7 +237,7 @@ export default function CoursesSection() {
                 border: "1px solid rgba(255,255,255,0.09)",
                 color: "rgba(240,230,255,0.88)",
                 fontSize: "14px",
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
                 outline: "none",
                 transition: "border-color 0.2s ease, box-shadow 0.2s ease",
               }}
@@ -315,7 +309,7 @@ export default function CoursesSection() {
                     background: `rgba(${course.rgb}, 0.1)`,
                     color: course.color,
                     marginBottom: "12px",
-                    fontFamily: "var(--font-display), sans-serif",
+                    fontFamily: "var(--font-body), 'Fira Code', monospace",
                   }}
                 >
                   {course.level}
@@ -329,7 +323,8 @@ export default function CoursesSection() {
                   fontWeight: 700,
                   color: "rgba(240,230,255,0.95)",
                   marginBottom: "10px",
-                  letterSpacing: "-0.02em",
+                  letterSpacing: "0.025em",
+                  lineHeight: 1.18,
                   fontFamily: "var(--font-display), sans-serif",
                 }}
               >
@@ -343,7 +338,7 @@ export default function CoursesSection() {
                   color: "rgba(240,230,255,0.48)",
                   lineHeight: 1.65,
                   marginBottom: "20px",
-                  fontFamily: "var(--font-body), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                 }}
               >
                 {course.description}
@@ -364,7 +359,7 @@ export default function CoursesSection() {
                     style={{
                       fontSize: "12px",
                       color: "rgba(240,230,255,0.38)",
-                      fontFamily: "var(--font-mono), monospace",
+                      fontFamily: "var(--font-mono), 'Fira Code', monospace",
                       display: "flex",
                       alignItems: "center",
                       gap: "5px",
@@ -379,7 +374,7 @@ export default function CoursesSection() {
                     style={{
                       fontSize: "12px",
                       color: course.color,
-                      fontFamily: "var(--font-mono), monospace",
+                      fontFamily: "var(--font-mono), 'Fira Code', monospace",
                       fontWeight: 600,
                       display: "flex",
                       alignItems: "center",

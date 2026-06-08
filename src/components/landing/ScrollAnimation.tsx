@@ -78,23 +78,31 @@ export default function ScrollAnimation() {
 
   const [loadProgress, setLoadProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  // Stars computed client-side only to avoid hydration mismatch
+  // Stars must be undefined during SSR — computed only after mount to avoid
+  // hydration mismatches from floating-point precision differences between
+  // server-serialized HTML attributes and full-precision JS values.
   const [loaderStars, setLoaderStars] = useState<Array<{
     w: number; top: number; left: number; opacity: number;
     color: string; duration: number; delay: number;
-  }>>([]);
+  }> | null>(null);
 
+  // Populate stars only on the client, after the first paint.
+  // setTimeout defers the setState call out of the synchronous effect body,
+  // satisfying react-hooks/set-state-in-effect while keeping this client-only.
   useEffect(() => {
-    const seed = (n: number) => { const x = Math.sin(n) * 9999; return x - Math.floor(x); };
-    setLoaderStars(Array.from({ length: 30 }, (_, i) => ({
-      w:        seed(i * 3) * 2 + 1,
-      top:      seed(i * 7) * 100,
-      left:     seed(i * 11) * 100,
-      opacity:  seed(i * 13) * 0.4 + 0.08,
-      color:    i % 3 === 0 ? "#ff2d78" : i % 3 === 1 ? "#9b30ff" : "white",
-      duration: seed(i * 17) * 3 + 2,
-      delay:    seed(i * 19) * 3,
-    })));
+    const id = setTimeout(() => {
+      const seed = (n: number) => { const x = Math.sin(n) * 9999; return x - Math.floor(x); };
+      setLoaderStars(Array.from({ length: 30 }, (_, i) => ({
+        w:        seed(i * 3) * 2 + 1,
+        top:      seed(i * 7) * 100,
+        left:     seed(i * 11) * 100,
+        opacity:  seed(i * 13) * 0.4 + 0.08,
+        color:    i % 3 === 0 ? "#ff2d78" : i % 3 === 1 ? "#9b30ff" : "white",
+        duration: seed(i * 17) * 3 + 2,
+        delay:    seed(i * 19) * 3,
+      })));
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   // ─── Core draw: blend frame[floor] → frame[ceil] by frac ─────────────────
@@ -163,7 +171,6 @@ export default function ScrollAnimation() {
     imagesRef.current = images;
 
     return () => cancelAnimationFrame(rafRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ─── Canvas setup + resize ────────────────────────────────────────────────
@@ -201,7 +208,6 @@ export default function ScrollAnimation() {
     resize();
     window.addEventListener("resize", resize, { passive: true });
     return () => window.removeEventListener("resize", resize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Recompute geometry once images finish loading
@@ -221,7 +227,6 @@ export default function ScrollAnimation() {
       );
     }
     drawBlended(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
 
   // ─── Scroll → target frame (via Lenis) ───────────────────────────────────
@@ -332,7 +337,6 @@ export default function ScrollAnimation() {
 
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -428,7 +432,7 @@ export default function ScrollAnimation() {
           }} />
 
           {/* Client-side only stars — no hydration mismatch */}
-          {loaderStars.map((s, i) => (
+          {loaderStars?.map((s, i) => (
             <div key={i} style={{
               position: "absolute",
               width: `${s.w}px`, height: `${s.w}px`,
@@ -462,10 +466,10 @@ export default function ScrollAnimation() {
               </defs>
             </svg>
             <span style={{
-              fontFamily: "var(--font-display, 'Space Grotesk', sans-serif)",
+              fontFamily: "var(--font-display), sans-serif",
               fontWeight: 700,
               fontSize: "20px",
-              letterSpacing: "-0.03em",
+              letterSpacing: "0.04em",
               background: "linear-gradient(135deg, #ffffff 0%, #e8d8ff 45%, #c084fc 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -515,7 +519,7 @@ export default function ScrollAnimation() {
             style={{
               fontSize: "11px",
               color: "rgba(240,230,255,0.28)",
-              fontFamily: "var(--font-mono, monospace)",
+              fontFamily: "var(--font-mono), 'Fira Code', monospace",
               letterSpacing: "0.1em",
               textTransform: "uppercase",
             }}
