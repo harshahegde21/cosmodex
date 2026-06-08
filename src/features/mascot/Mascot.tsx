@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useMascotStore } from "@/hooks/useMascotStore";
 import mascotBody from "./Mascot - Without Eyes.png";
 import mascotPupil from "./Mascot - Pupil.png";
@@ -19,6 +20,8 @@ export default function Mascot() {
   const rightEyeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const boundaryRef = useRef<HTMLDivElement>(null);
+  
+  const pathname = usePathname();
 
   // Use Framer Motion's manual animation controls for the teleport sequence
   const controls = useAnimation();
@@ -123,6 +126,10 @@ export default function Mascot() {
     scaleY: [1, 1, 0.1, 1, 1],
     transition: { duration: 4, repeat: Infinity, times: [0, 0.85, 0.9, 0.95, 1], ease: "easeInOut" as const }
   };
+
+  if (pathname === '/onboarding' || pathname?.startsWith('/onboarding/')) {
+    return null;
+  }
 
   return (
     <div ref={boundaryRef} className="fixed 
