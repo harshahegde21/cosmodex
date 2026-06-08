@@ -71,7 +71,7 @@ export default function Footer() {
                   fontSize: "16px",
                   letterSpacing: "-0.03em",
                   color: "#ffffff",
-                  fontFamily: "var(--font-display), 'Space Grotesk', sans-serif",
+                  fontFamily: "var(--font-display), sans-serif",
                 }}
               >
                 CosmoDeX
@@ -82,7 +82,7 @@ export default function Footer() {
                 fontSize: "13.5px",
                 color: "rgba(240,230,255,0.32)",
                 lineHeight: 1.65,
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
               }}
             >
               Start your coding expedition. Learn, battle, and level up
@@ -130,7 +130,7 @@ export default function Footer() {
             style={{
               fontSize: "12.5px",
               color: "rgba(240,230,255,0.22)",
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             © 2026 CosmoDeX. Built with ✦ for the cosmos.
@@ -166,7 +166,7 @@ export default function Footer() {
               style={{
                 fontSize: "11.5px",
                 color: "rgba(240,230,255,0.18)",
-                fontFamily: "var(--font-mono), monospace",
+                fontFamily: "var(--font-mono), 'Fira Code', monospace",
                 letterSpacing: "0.04em",
                 marginLeft: "4px",
               }}
@@ -191,7 +191,7 @@ function FooterColumn({ title, links }: { title: string; links: string[] }) {
           textTransform: "uppercase",
           color: "rgba(240,230,255,0.35)",
           marginBottom: "4px",
-          fontFamily: "var(--font-display), sans-serif",
+          fontFamily: "var(--font-body), 'Fira Code', monospace",
         }}
       >
         {title}
@@ -205,7 +205,7 @@ function FooterColumn({ title, links }: { title: string; links: string[] }) {
             color: "rgba(240,230,255,0.42)",
             textDecoration: "none",
             transition: "color 0.18s ease",
-            fontFamily: "var(--font-body), sans-serif",
+            fontFamily: "var(--font-body), 'Fira Code', monospace",
           }}
           onMouseEnter={(e) =>
             ((e.currentTarget as HTMLElement).style.color = "rgba(240,230,255,0.82)")

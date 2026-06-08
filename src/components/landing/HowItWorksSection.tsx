@@ -97,8 +97,8 @@ export default function HowItWorksSection() {
             style={{
               fontSize: "clamp(32px, 5vw, 58px)",
               fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -114,7 +114,7 @@ export default function HowItWorksSection() {
               maxWidth: "420px",
               margin: "0 auto",
               lineHeight: 1.65,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Simple commands, powerful results. Get two servers talking in under a minute.
@@ -174,7 +174,7 @@ export default function HowItWorksSection() {
                     fontWeight: 700,
                     color: `rgba(${step.accentRgb}, 0.18)`,
                     lineHeight: 1,
-                    letterSpacing: "-0.05em",
+                    letterSpacing: "0.02em",
                     fontFamily: "var(--font-display), sans-serif",
                   }}
                 >
@@ -189,7 +189,8 @@ export default function HowItWorksSection() {
                   fontWeight: 700,
                   color: "rgba(240,230,255,0.95)",
                   marginBottom: "12px",
-                  letterSpacing: "-0.025em",
+                  letterSpacing: "0.025em",
+                  lineHeight: 1.18,
                   fontFamily: "var(--font-display), sans-serif",
                 }}
               >
@@ -203,7 +204,7 @@ export default function HowItWorksSection() {
                   color: "rgba(240,230,255,0.48)",
                   lineHeight: 1.65,
                   marginBottom: "20px",
-                  fontFamily: "var(--font-body), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                 }}
               >
                 {step.description}
@@ -216,7 +217,7 @@ export default function HowItWorksSection() {
                   border: `1px solid rgba(${step.accentRgb}, 0.18)`,
                   borderRadius: "10px",
                   padding: "12px 16px",
-                  fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                  fontFamily: "var(--font-mono), 'Fira Code', monospace",
                   fontSize: "12.5px",
                   color: step.accent,
                   display: "flex",
@@ -342,7 +343,7 @@ export default function HowItWorksSection() {
               style={{
                 fontSize: "10px",
                 color: "rgba(240,230,255,0.28)",
-                fontFamily: "var(--font-mono), monospace",
+                fontFamily: "var(--font-mono), 'Fira Code', monospace",
                 letterSpacing: "0.06em",
                 textAlign: "center",
               }}
@@ -445,7 +446,7 @@ function ServerNode({
           fontSize: "12px",
           fontWeight: 600,
           color: color,
-          fontFamily: "var(--font-mono), monospace",
+          fontFamily: "var(--font-mono), 'Fira Code', monospace",
           letterSpacing: "0.02em",
         }}
       >

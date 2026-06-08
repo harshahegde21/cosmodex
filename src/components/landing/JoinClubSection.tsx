@@ -205,7 +205,7 @@ function PricingCard({
               color: "white",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Most Popular
@@ -281,7 +281,7 @@ function PricingCard({
               style={{
                 fontSize: "14px",
                 color: "rgba(240,230,255,0.4)",
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
                 marginBottom: "2px",
               }}
             >
@@ -300,7 +300,7 @@ function PricingCard({
             style={{
               fontSize: "12px",
               color: "rgba(240,230,255,0.32)",
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
               marginBottom: "28px",
               minHeight: "18px",
               textAlign: "center",
@@ -329,7 +329,7 @@ function PricingCard({
                 gap: "10px",
                 fontSize: "14px",
                 color: "rgba(240,230,255,0.72)",
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
                 lineHeight: 1.5,
               }}
             >
@@ -376,7 +376,7 @@ function PricingCard({
             borderRadius: "12px",
             fontSize: "15px",
             fontWeight: 700,
-            fontFamily: "var(--font-display), sans-serif",
+            fontFamily: "var(--font-body), 'Fira Code', monospace",
             letterSpacing: "-0.01em",
             textDecoration: "none",
             cursor: "pointer",
@@ -425,7 +425,7 @@ function PricingCard({
             marginTop: "14px",
             fontSize: "12px",
             color: "rgba(240,230,255,0.28)",
-            fontFamily: "var(--font-body), sans-serif",
+            fontFamily: "var(--font-body), 'Fira Code', monospace",
             textAlign: "center",
             lineHeight: 1.55,
           }}
@@ -514,8 +514,8 @@ export default function JoinClubSection() {
             style={{
               fontSize: "clamp(34px, 5.5vw, 64px)",
               fontWeight: 700,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.04,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -531,7 +531,7 @@ export default function JoinClubSection() {
               maxWidth: "460px",
               margin: "0 auto",
               lineHeight: 1.68,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Simple, transparent pricing. No hidden fees.{" "}
@@ -559,7 +559,7 @@ export default function JoinClubSection() {
               fontSize: "14px",
               fontWeight: 600,
               color: isMonthly ? "rgba(240,230,255,0.9)" : "rgba(240,230,255,0.4)",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
               transition: "color 0.25s ease",
             }}
           >
@@ -608,7 +608,7 @@ export default function JoinClubSection() {
               fontSize: "14px",
               fontWeight: 600,
               color: !isMonthly ? "rgba(240,230,255,0.9)" : "rgba(240,230,255,0.4)",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -627,7 +627,7 @@ export default function JoinClubSection() {
                 color: "#ff6ba8",
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                fontFamily: "var(--font-display), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
                 transition: "opacity 0.25s ease",
                 opacity: !isMonthly ? 1 : 0.5,
               }}
@@ -666,7 +666,7 @@ export default function JoinClubSection() {
             marginTop: "36px",
             fontSize: "13px",
             color: "rgba(240,230,255,0.28)",
-            fontFamily: "var(--font-body), sans-serif",
+            fontFamily: "var(--font-body), 'Fira Code', monospace",
           }}
         >
           All plans include access to our mobile app, community Discord, and base course library.

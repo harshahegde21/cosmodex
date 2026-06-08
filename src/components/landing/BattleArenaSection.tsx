@@ -57,8 +57,8 @@ export default function BattleArenaSection() {
               style={{
                 fontSize: "clamp(28px, 4vw, 52px)",
                 fontWeight: 700,
-                letterSpacing: "-0.035em",
-                lineHeight: 1.05,
+                letterSpacing: "0.03em",
+                lineHeight: 1.15,
                 marginBottom: "20px",
                 fontFamily: "var(--font-display), sans-serif",
               }}
@@ -74,7 +74,7 @@ export default function BattleArenaSection() {
                 lineHeight: 1.7,
                 marginBottom: "36px",
                 maxWidth: "400px",
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
               }}
             >
               Compete in timed coding challenges, climb the leaderboard, and
@@ -124,7 +124,7 @@ export default function BattleArenaSection() {
                       fontSize: "12px",
                       fontWeight: 600,
                       color: "rgba(240,230,255,0.6)",
-                      fontFamily: "var(--font-mono), monospace",
+                      fontFamily: "var(--font-mono), 'Fira Code', monospace",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -135,7 +135,7 @@ export default function BattleArenaSection() {
                   style={{
                     fontSize: "11px",
                     color: "#ff2d78",
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: "var(--font-mono), 'Fira Code', monospace",
                     fontWeight: 700,
                   }}
                 >
@@ -149,7 +149,7 @@ export default function BattleArenaSection() {
                   style={{
                     fontSize: "13px",
                     color: "rgba(240,230,255,0.38)",
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: "var(--font-mono), 'Fira Code', monospace",
                     marginBottom: "12px",
                     letterSpacing: "0.04em",
                     textTransform: "uppercase",
@@ -163,7 +163,7 @@ export default function BattleArenaSection() {
                     color: "rgba(240,230,255,0.78)",
                     lineHeight: 1.65,
                     marginBottom: "20px",
-                    fontFamily: "var(--font-body), sans-serif",
+                    fontFamily: "var(--font-body), 'Fira Code', monospace",
                   }}
                 >
                   Given a list of integers, return the two numbers that add up to the target sum.
@@ -177,7 +177,7 @@ export default function BattleArenaSection() {
                     borderLeft: "3px solid #9b30ff",
                     borderRadius: "10px",
                     padding: "16px",
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: "var(--font-mono), 'Fira Code', monospace",
                     fontSize: "12.5px",
                     lineHeight: 1.8,
                     marginBottom: "20px",
@@ -229,7 +229,7 @@ export default function BattleArenaSection() {
                           fontSize: "11px",
                           fontWeight: 700,
                           color: entry.color,
-                          fontFamily: "var(--font-mono), monospace",
+                          fontFamily: "var(--font-mono), 'Fira Code', monospace",
                           minWidth: "20px",
                         }}
                       >
@@ -240,7 +240,7 @@ export default function BattleArenaSection() {
                           flex: 1,
                           fontSize: "13px",
                           color: entry.name === "you" ? "rgba(240,230,255,0.9)" : "rgba(240,230,255,0.55)",
-                          fontFamily: "var(--font-body), sans-serif",
+                          fontFamily: "var(--font-body), 'Fira Code', monospace",
                           fontWeight: entry.name === "you" ? 600 : 400,
                         }}
                       >
@@ -250,7 +250,7 @@ export default function BattleArenaSection() {
                         style={{
                           fontSize: "11.5px",
                           color: entry.color,
-                          fontFamily: "var(--font-mono), monospace",
+                          fontFamily: "var(--font-mono), 'Fira Code', monospace",
                           fontWeight: 600,
                         }}
                       >

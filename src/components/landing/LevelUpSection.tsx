@@ -61,8 +61,8 @@ export default function LevelUpSection() {
             style={{
               fontSize: "clamp(32px, 5vw, 58px)",
               fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -78,7 +78,7 @@ export default function LevelUpSection() {
               maxWidth: "460px",
               margin: "0 auto",
               lineHeight: 1.65,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Every lesson, challenge, and streak earns you ✦. Watch your rank
@@ -160,7 +160,7 @@ export default function LevelUpSection() {
                     style={{
                       fontSize: "12.5px",
                       color: "rgba(240,230,255,0.35)",
-                      fontFamily: "var(--font-mono), monospace",
+                      fontFamily: "var(--font-mono), 'Fira Code', monospace",
                     }}
                   >
                     {currentXP.toLocaleString()} / {nextLevelXP.toLocaleString()} ✦
@@ -181,7 +181,7 @@ export default function LevelUpSection() {
                     style={{
                       fontSize: "11px",
                       color: "rgba(240,230,255,0.35)",
-                      fontFamily: "var(--font-display), sans-serif",
+                      fontFamily: "var(--font-body), 'Fira Code', monospace",
                       fontWeight: 600,
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",
@@ -193,7 +193,7 @@ export default function LevelUpSection() {
                     style={{
                       fontSize: "11px",
                       color: "#c084fc",
-                      fontFamily: "var(--font-mono), monospace",
+                      fontFamily: "var(--font-mono), 'Fira Code', monospace",
                       fontWeight: 600,
                     }}
                   >
@@ -245,7 +245,7 @@ export default function LevelUpSection() {
                       style={{
                         fontSize: "13px",
                         color: "rgba(240,230,255,0.58)",
-                        fontFamily: "var(--font-body), sans-serif",
+                        fontFamily: "var(--font-body), 'Fira Code', monospace",
                       }}
                     >
                       {item.label}
@@ -254,7 +254,7 @@ export default function LevelUpSection() {
                       style={{
                         fontSize: "12px",
                         color: item.color,
-                        fontFamily: "var(--font-mono), monospace",
+                        fontFamily: "var(--font-mono), 'Fira Code', monospace",
                         fontWeight: 700,
                       }}
                     >
@@ -281,7 +281,7 @@ export default function LevelUpSection() {
                 textTransform: "uppercase",
                 color: "rgba(240,230,255,0.28)",
                 marginBottom: "8px",
-                fontFamily: "var(--font-display), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
               }}
             >
               Rank Milestones
@@ -355,7 +355,7 @@ export default function LevelUpSection() {
                       style={{
                         fontSize: "11.5px",
                         color: "rgba(240,230,255,0.28)",
-                        fontFamily: "var(--font-mono), monospace",
+                        fontFamily: "var(--font-mono), 'Fira Code', monospace",
                       }}
                     >
                       {m.xp === 0 ? "Starting rank" : `${m.xp.toLocaleString()} ✦ required`}
@@ -370,7 +370,7 @@ export default function LevelUpSection() {
                         fontWeight: 700,
                         background: `rgba(${m.rgb}, 0.1)`,
                         color: m.color,
-                        fontFamily: "var(--font-display), sans-serif",
+                        fontFamily: "var(--font-body), 'Fira Code', monospace",
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
                         flexShrink: 0,

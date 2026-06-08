@@ -190,7 +190,7 @@ export default function StatsSection() {
                   fontWeight: 600,
                   color: "rgba(240,230,255,0.82)",
                   marginBottom: "4px",
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                   letterSpacing: "-0.01em",
                 }}
               >
@@ -202,7 +202,7 @@ export default function StatsSection() {
                 style={{
                   fontSize: "12.5px",
                   color: "rgba(240,230,255,0.33)",
-                  fontFamily: "var(--font-body), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                 }}
               >
                 {stat.description}

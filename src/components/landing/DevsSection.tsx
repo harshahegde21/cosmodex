@@ -102,8 +102,8 @@ export default function DevsSection() {
             style={{
               fontSize: "clamp(32px, 5vw, 58px)",
               fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -118,7 +118,7 @@ export default function DevsSection() {
               maxWidth: "420px",
               margin: "0 auto",
               lineHeight: 1.65,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             The crew behind the cosmos. Passionate builders making learning
@@ -194,7 +194,7 @@ export default function DevsSection() {
                     fontSize: "22px",
                     fontWeight: 700,
                     color: "white",
-                    fontFamily: "var(--font-display), sans-serif",
+                    fontFamily: "var(--font-body), 'Fira Code', monospace",
                     letterSpacing: "-0.02em",
                   }}
                 >
@@ -208,7 +208,7 @@ export default function DevsSection() {
                   fontSize: "16px",
                   fontWeight: 700,
                   color: "rgba(240,230,255,0.92)",
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                   letterSpacing: "-0.02em",
                   marginBottom: "6px",
                   textAlign: "center",
@@ -222,7 +222,7 @@ export default function DevsSection() {
                 style={{
                   fontSize: "12.5px",
                   color: dev.color,
-                  fontFamily: "var(--font-body), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                   fontWeight: 500,
                   textAlign: "center",
                   marginBottom: "16px",

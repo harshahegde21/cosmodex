@@ -134,10 +134,10 @@ export default function CommandsSection() {
               style={{
                 fontSize: "clamp(28px, 4vw, 50px)",
                 fontWeight: 700,
-                letterSpacing: "-0.035em",
-                lineHeight: 1.05,
+                letterSpacing: "0.03em",
+                lineHeight: 1.15,
                 marginBottom: "16px",
-                fontFamily: "var(--font-display), sans-serif",
+                fontFamily: "var(--font-display)",
               }}
             >
               <span style={{ color: "rgba(240,230,255,0.9)" }}>Everything at</span>
@@ -151,7 +151,7 @@ export default function CommandsSection() {
                 lineHeight: 1.65,
                 marginBottom: "32px",
                 maxWidth: "360px",
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
               }}
             >
               Simple slash commands that feel natural. No complex setup, no
@@ -198,7 +198,7 @@ export default function CommandsSection() {
                     marginLeft: "6px",
                     fontSize: "11.5px",
                     color: "rgba(240,230,255,0.28)",
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: "var(--font-mono), 'Fira Code', monospace",
                   }}
                 >
                   Discord — #general
@@ -209,7 +209,7 @@ export default function CommandsSection() {
               <div style={{ padding: "18px 20px" }}>
                 <div
                   style={{
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: "var(--font-mono), 'Fira Code', monospace",
                     fontSize: "12.5px",
                     lineHeight: 1.8,
                   }}
@@ -333,7 +333,7 @@ export default function CommandsSection() {
                         ? "0 4px 18px rgba(255,45,120,0.28)"
                         : "none",
                     transform: activeCategory === cat ? "scale(1.02)" : "scale(1)",
-                    fontFamily: "var(--font-display), sans-serif",
+                    fontFamily: "var(--font-body), 'Fira Code', monospace",
                     letterSpacing: "-0.01em",
                   }}
                 >
@@ -382,7 +382,7 @@ export default function CommandsSection() {
                     {/* Command name */}
                     <div
                       style={{
-                        fontFamily: "var(--font-mono), monospace",
+                        fontFamily: "var(--font-mono), 'Fira Code', monospace",
                         fontSize: "13.5px",
                         fontWeight: 600,
                         color: cmd.color,
@@ -405,7 +405,7 @@ export default function CommandsSection() {
                               : "rgba(240,230,255,0.65)",
                           marginBottom: "2px",
                           transition: "color 0.2s ease",
-                          fontFamily: "var(--font-body), sans-serif",
+                          fontFamily: "var(--font-body), 'Fira Code', monospace",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -417,7 +417,7 @@ export default function CommandsSection() {
                         style={{
                           fontSize: "11.5px",
                           color: "rgba(240,230,255,0.28)",
-                          fontFamily: "var(--font-mono), monospace",
+                          fontFamily: "var(--font-mono), 'Fira Code', monospace",
                         }}
                       >
                         {cmd.usage}
@@ -436,7 +436,7 @@ export default function CommandsSection() {
                         flexShrink: 0,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
-                        fontFamily: "var(--font-display), sans-serif",
+                        fontFamily: "var(--font-body), 'Fira Code', monospace",
                       }}
                     >
                       {cmd.category}

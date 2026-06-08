@@ -188,8 +188,8 @@ export default function CTASection() {
               style={{
                 fontSize: "clamp(34px, 5.5vw, 64px)",
                 fontWeight: 700,
-                letterSpacing: "-0.04em",
-                lineHeight: 1.04,
+                letterSpacing: "0.03em",
+                lineHeight: 1.15,
                 marginBottom: "20px",
                 fontFamily: "var(--font-display), sans-serif",
               }}
@@ -212,7 +212,7 @@ export default function CTASection() {
                 maxWidth: "460px",
                 margin: "0 auto 44px",
                 lineHeight: 1.68,
-                fontFamily: "var(--font-body), sans-serif",
+                fontFamily: "var(--font-body), 'Fira Code', monospace",
               }}
             >
               Invite CosmoDeX to your Discord server and start making
@@ -338,7 +338,7 @@ export default function CTASection() {
                         fontWeight: 600,
                         letterSpacing: "0.07em",
                         textTransform: "uppercase",
-                        fontFamily: "var(--font-display), sans-serif",
+                        fontFamily: "var(--font-body), 'Fira Code', monospace",
                       }}
                     >
                       {stat.label}

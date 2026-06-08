@@ -13,55 +13,53 @@
  *
  * FONT ROLES
  * ──────────
- *  display  →  --font-display  →  headings, nav, badges, buttons, labels
- *  body     →  --font-body     →  paragraphs, descriptions, body copy
+ *  display  →  --font-display  →  hero headings, section titles, feature card titles,
+ *                                  achievement titles, decorative game elements ONLY
+ *  body     →  --font-body     →  ALL other text: nav, buttons, descriptions,
+ *                                  badges, forms, footer, cards, modals
  *  mono     →  --font-mono     →  code blocks, terminal mockups, XP values
- *
- * POPULAR SWAP OPTIONS (just change the import + function name)
- * ─────────────────────────────────────────────────────────────
- *  Display alternatives:
- *    Outfit | Syne | Clash Display | DM Sans | Manrope | Raleway
- *    Inter | Urbanist | Cabinet Grotesk | Bricolage Grotesque
- *
- *  Body alternatives:
- *    Inter | DM Sans | Nunito | Lato | Source Sans 3
- *    Geist | Figtree | Onest | Instrument Sans
- *
- *  Mono alternatives:
- *    Fira Code | Source Code Pro | IBM Plex Mono | Roboto Mono
- *    Geist Mono | Inconsolata | Cascadia Code
+ *                                  (same as body — unified Fira Code)
  */
 
+import localFont from "next/font/local";
 import {
-  // ── DISPLAY font (headings, nav, buttons) ──────────────────────────────────
-  // Swap: replace "Space_Grotesk" with any Google Font name (snake_case)
-  Space_Grotesk as DisplayFont,
+  // ── BODY font (all UI text — nav, buttons, descriptions, forms, footer) ──────
+  // Fira Code: monospace with programming ligatures — developer-centric aesthetic
+  Fira_Code as BodyFont,
 
-  // ── BODY font (paragraphs, descriptions) ──────────────────────────────────
-  // Swap: replace "Plus_Jakarta_Sans" with any Google Font name (snake_case)
-  Plus_Jakarta_Sans as BodyFont,
-
-  // ── MONO font (code, terminal, XP values) ─────────────────────────────────
-  // Swap: replace "JetBrains_Mono" with any Google Font name (snake_case)
-  JetBrains_Mono as MonoFont,
+  // ── MONO font (code blocks, terminal, XP values) ──────────────────────────────
+  // Same as body — unified Fira Code throughout for a cohesive dev experience
+  Fira_Code as MonoFont,
 } from "next/font/google";
 
 // ── Display ──────────────────────────────────────────────────────────────────
-// Adjust `weight` if your chosen font supports different values
-export const displayFont = DisplayFont({
+// Hitchcut: ONLY for hero headings, section titles, feature card titles,
+// achievement titles, and decorative gaming elements.
+// NOT for nav links, buttons, badges, body text, or UI labels.
+export const displayFont = localFont({
+  src: [
+    {
+      path: "../public/fonts/Hitchcut Font/Hitchcut-typeface/Hitchcut-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   variable: "--font-display",
+  display: "swap",
+});
+
+// ── Body ─────────────────────────────────────────────────────────────────────
+// Fira Code as the primary application font — nav links, buttons, descriptions,
+// form elements, badges, footer content, cards, modals, and ALL UI text.
+export const bodyFont = BodyFont({
+  variable: "--font-body",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
 
-// ── Body ─────────────────────────────────────────────────────────────────────
-export const bodyFont = BodyFont({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
 // ── Mono ─────────────────────────────────────────────────────────────────────
+// Fira Code — code blocks, terminal mockups, XP values, stat numbers.
+// Unified with body for a seamless developer experience.
 export const monoFont = MonoFont({
   variable: "--font-mono",
   subsets: ["latin"],

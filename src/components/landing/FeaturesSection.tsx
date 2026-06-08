@@ -157,8 +157,8 @@ export default function FeaturesSection() {
             style={{
               fontSize: "clamp(32px, 5vw, 58px)",
               fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
+              letterSpacing: "0.03em",
+              lineHeight: 1.15,
               marginBottom: "18px",
               fontFamily: "var(--font-display), sans-serif",
             }}
@@ -176,7 +176,7 @@ export default function FeaturesSection() {
               maxWidth: "460px",
               margin: "0 auto",
               lineHeight: 1.65,
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-body), 'Fira Code', monospace",
             }}
           >
             Six powerful features that make cross-server communication feel like magic.
@@ -234,7 +234,7 @@ export default function FeaturesSection() {
                   background: `rgba(${feature.accentRgb}, 0.1)`,
                   color: feature.accent,
                   marginBottom: "12px",
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                 }}
               >
                 {feature.tag}
@@ -247,7 +247,8 @@ export default function FeaturesSection() {
                   fontWeight: 700,
                   color: "rgba(240,230,255,0.95)",
                   marginBottom: "10px",
-                  letterSpacing: "-0.02em",
+                  letterSpacing: "0.025em",
+                  lineHeight: 1.18,
                   fontFamily: "var(--font-display), sans-serif",
                 }}
               >
@@ -260,7 +261,7 @@ export default function FeaturesSection() {
                   fontSize: "14.5px",
                   color: "rgba(240,230,255,0.48)",
                   lineHeight: 1.65,
-                  fontFamily: "var(--font-body), sans-serif",
+                  fontFamily: "var(--font-body), 'Fira Code', monospace",
                 }}
               >
                 {feature.description}
