@@ -1,5 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-cosmo-bg: #090214;
+  --color-cosmo-surface: rgba(20, 8, 45, 0.65);
+  --color-cosmo-surface-hover: rgba(35, 15, 75, 0.8);
+  --color-cosmo-border: rgba(255, 255, 255, 0.1);
+  --color-cosmo-border-active: rgba(255, 255, 255, 0.3);
+  
+  --color-gradient-1-start: #FFA249;
+  --color-gradient-1-end: #9E00F6;
+  
+  --color-gradient-2-start: #00FFE9;
+  --color-gradient-2-end: #2E3192;
+  
+  --color-gradient-3-start: #FF7F83;
+  --color-gradient-3-end: #2700F6;
+}
+
+body {
+  @apply bg-cosmo-bg text-white font-sans antialiased overflow-hidden selection:bg-fuchsia-500/30;
+}
+
+.cosmo-glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  box-shadow: 0 0 100px rgba(141, 55, 214, 0.25); /* Stronger ambient glow */
+}
+
+.cosmo-glass-panel {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cosmo-glass-panel:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 40px rgba(217, 95, 209, 0.35);
+  transform: translateY(-4px);
+}
+
+/* Primary Neon Buttons */
+.cosmo-btn-primary {
+  background: linear-gradient(135deg, #E873C3 0%, #D95FD1 35%, #C453D6 65%, #8D37D6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(232, 115, 195, 0.35), 
+              0 0 40px rgba(217, 95, 209, 0.25), 
+              0 0 80px rgba(141, 55, 214, 0.2);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cosmo-btn-primary:not(:disabled):hover {
+  transform: scale(1.04) translateY(-2px);
+  filter: brightness(1.15);
+  box-shadow: 0 0 30px rgba(232, 115, 195, 0.6), 
+              0 0 60px rgba(217, 95, 209, 0.45), 
+              0 0 120px rgba(141, 55, 214, 0.35);
+}
+
+.cosmo-btn-primary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Secondary Actions / Outlined Buttons */
+.cosmo-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: white;
+  font-weight: 500;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cosmo-btn-secondary:not(:disabled):hover {
+  transform: scale(1.03) translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 25px rgba(217, 95, 209, 0.25);
+}
+
+/* Form Inputs */
+.cosmo-input {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: white;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.cosmo-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cosmo-input:focus {
+  border-color: #D95FD1;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 20px rgba(217, 95, 209, 0.35), 
+              inset 0 0 15px rgba(217, 95, 209, 0.15);
+}
+
+.cosmo-title {
+  color: white;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.text-gradient-1 {
+  @apply bg-gradient-to-r from-[var(--color-gradient-1-start)] to-[var(--color-gradient-1-end)] bg-clip-text text-transparent;
+}
+
+.text-gradient-2 {
+  @apply bg-gradient-to-r from-[var(--color-gradient-2-start)] to-[var(--color-gradient-2-end)] bg-clip-text text-transparent;
+}
+
+.bg-gradient-1 {
+  @apply bg-gradient-to-br from-[var(--color-gradient-1-start)] to-[var(--color-gradient-1-end)];
+}
+
+.bg-gradient-2 {
+  @apply bg-gradient-to-br from-[var(--color-gradient-2-start)] to-[var(--color-gradient-2-end)];
+}
+
+.bg-gradient-3 {
+  @apply bg-gradient-to-br from-[var(--color-gradient-3-start)] to-[var(--color-gradient-3-end)];
+}
+
+/* Custom Scrollbar for inner elements */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cosmo-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gradient-2-start);
+}
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
   --background: #050508;
