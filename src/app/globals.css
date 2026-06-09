@@ -169,6 +169,7 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gradient-2-start);
+}
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
   --background: #050508;

@@ -54,7 +54,7 @@ package-lock.json
 /src/generated/prisma
 
 # unused public assets — keep on disk but out of git
-public/fonts/
+# public/fonts/
 public/ezgif-2eb2b02b232d277b-jpg/
 public/ezgif-62d5501a1beddc91-jpg/
 public/ezgif-6fabdd76e6ec8c91-jpg/
