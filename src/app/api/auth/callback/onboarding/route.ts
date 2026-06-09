@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const _body = await req.json();
+  await req.json();
 
   // save to database
 

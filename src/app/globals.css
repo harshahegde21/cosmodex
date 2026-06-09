@@ -21,6 +21,25 @@
   --color-gradient-3-end: #2700F6;
 }
 
+@keyframes risingstar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-3840px);
+  }
+}
+
+.animate-risingstar {
+  animation: risingstar 1000s linear infinite;
+}
+
+.rising-stars__small::after,
+.rising-stars__medium::after,
+.rising-stars__large::after {
+  box-shadow: inherit;
+}
+
 body {
   @apply bg-cosmo-bg text-white font-sans antialiased overflow-hidden selection:bg-fuchsia-500/30;
 }
