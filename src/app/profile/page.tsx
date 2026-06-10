@@ -199,6 +199,9 @@ export default function App() {
         </motion.div>
       </div>
 
+      {/* Dark overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/50 pointer-events-none z-[5]" />
+
       {/* Main Content Area */}
       <div className="relative z-10 w-full h-full overflow-y-auto px-4 py-8 sm:px-8 custom-scrollbar">
         {/* Navbar spacing placeholder (Navbar would go up here, floating) */}
@@ -207,14 +210,14 @@ export default function App() {
         <div className="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 lg:gap-8 pb-32">
           
           {/* Left Column (Main Profile) */}
-          <div className="flex-1 flex flex-col gap-8">
+          <div className="flex-1 flex flex-col cosmo-glass-panel border border-white/10 rounded-[32px] pb-10 overflow-hidden relative">
             
             {/* Banner & Avatar Wrapper */}
             <div className="relative">
               {/* Banner Image */}
-              <div className="w-full h-56 sm:h-64 rounded-3xl overflow-hidden glass-panel border border-white/10 shadow-[0_0_80px_rgba(217,95,209,0.1)] relative">
+              <div className="w-full h-56 sm:h-64 rounded-t-[32px] overflow-hidden relative">
                 <div className="w-full h-full bg-white/5 opacity-80" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0518]/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0518]/90 to-transparent" />
               </div>
               
               {/* Action Bar (Overlapping Banner Base) */}
