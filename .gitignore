@@ -68,3 +68,5 @@ public/window.svg
 # local test scripts
 test-prisma.ts
 test-signup.js
+
+/debug-recordings
