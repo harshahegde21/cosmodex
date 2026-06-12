@@ -223,7 +223,7 @@ function PricingCard({
           border: plan.isPopular
             ? "none"
             : "1px solid rgba(255,255,255,0.07)",
-          padding: "32px 28px 28px",
+          padding: "36px 32px 32px",
           height: "100%",
           display: "flex",
           flexDirection: "column",
@@ -501,7 +501,7 @@ export default function JoinClubSection() {
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: "center", marginBottom: "48px" }}
+          style={{ textAlign: "center", marginBottom: "64px" }}
         >
           <div className="badge" style={{ marginBottom: "22px" }}>
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">

@@ -154,6 +154,7 @@ export default function HeroSection() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          paddingTop: "56px", /* offset fixed navbar height */
           pointerEvents: "none",
         }}
       >
@@ -163,8 +164,8 @@ export default function HeroSection() {
           transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           style={{
             textAlign: "center",
-            padding: "0 24px",
-            maxWidth: "860px",
+            padding: "0 48px",
+            maxWidth: "900px",
             pointerEvents: "auto",
           }}
         >
@@ -336,7 +337,7 @@ export default function HeroSection() {
           transition={{ delay: 1.7, duration: 0.8 }}
           style={{
             position: "absolute",
-            bottom: "40px",
+            bottom: "48px",
             left: "50%",
             transform: "translateX(-50%)",
             display: "flex",

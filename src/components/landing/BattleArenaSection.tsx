@@ -36,7 +36,7 @@ export default function BattleArenaSection() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "80px",
+            gap: "96px",
             alignItems: "center",
           }}
           className="battle-grid"
@@ -102,7 +102,7 @@ export default function BattleArenaSection() {
               {/* Header bar */}
               <div
                 style={{
-                  padding: "14px 20px",
+                  padding: "14px 24px",
                   borderBottom: "1px solid rgba(255,255,255,0.05)",
                   display: "flex",
                   alignItems: "center",
@@ -144,7 +144,7 @@ export default function BattleArenaSection() {
               </div>
 
               {/* Challenge content */}
-              <div style={{ padding: "24px" }}>
+              <div style={{ padding: "28px" }}>
                 <div
                   style={{
                     fontSize: "13px",

@@ -90,7 +90,7 @@ export default function DevsSection() {
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: "center", marginBottom: "64px" }}
+          style={{ textAlign: "center", marginBottom: "80px" }}
         >
           <div className="badge" style={{ marginBottom: "22px" }}>
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -148,7 +148,7 @@ export default function DevsSection() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                padding: "32px 24px",
+                padding: "40px 28px",
                 borderRadius: "20px",
                 background: "rgba(255,255,255,0.02)",
                 border: "1px solid rgba(255,255,255,0.06)",
