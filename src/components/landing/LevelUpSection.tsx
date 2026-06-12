@@ -49,7 +49,7 @@ export default function LevelUpSection() {
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: "center", marginBottom: "72px" }}
+          style={{ textAlign: "center", marginBottom: "80px" }}
         >
           <div className="badge" style={{ marginBottom: "22px" }}>
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -90,7 +90,7 @@ export default function LevelUpSection() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "48px",
+            gap: "64px",
             alignItems: "start",
           }}
           className="levelup-grid"

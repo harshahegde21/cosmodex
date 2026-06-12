@@ -233,6 +233,169 @@ h4, h5, h6 {
   background: var(--color-gradient-2-start);
 }
 
+/* ─── Landing Layout Utilities ──────────────────────────────────────────────── */
+
+/* Section vertical rhythm — keeps every section off the viewport edges */
+.section-padding {
+  padding: 120px 0;
+}
+
+/* Centred content column with comfortable horizontal gutters */
+.container-custom {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* Small pill badge used above section headings */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff6ba8;
+  background: rgba(255, 45, 120, 0.08);
+  border: 1px solid rgba(255, 45, 120, 0.22);
+  font-family: var(--font-body), 'Fira Code', monospace;
+}
+
+/* Course / feature cards */
+.feature-card {
+  position: relative;
+  padding: 28px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+  border-color: rgba(255, 45, 120, 0.22);
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.4);
+}
+
+/* Bottom accent line on cards */
+.card-accent-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.feature-card:hover .card-accent-line {
+  opacity: 1;
+}
+
+/* Hero CTA primary button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff2d78, #9b30ff);
+  text-decoration: none;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+  font-family: var(--font-body), 'Fira Code', monospace;
+  box-shadow: 0 8px 32px rgba(255, 45, 120, 0.38);
+  border: none;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(255, 45, 120, 0.55);
+  filter: brightness(1.08);
+}
+
+/* Secondary outlined button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(240, 230, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  transition: all 0.22s ease;
+  font-family: var(--font-body), 'Fira Code', monospace;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Thin horizontal rule used in sections */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  border: none;
+}
+
+/* ── Scroll indicator bounce ─────────────────────────────────────────────────── */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0);   opacity: 1;   }
+  50%       { transform: translateY(6px); opacity: 0.4; }
+}
+.animate-scroll-bounce {
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+/* ── Hero beta badge pulse ───────────────────────────────────────────────────── */
+@keyframes ping-slow {
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ── Arena cursor blink ──────────────────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px #ff2d78; }
+  50%       { box-shadow: 0 0 18px #ff2d78, 0 0 32px rgba(255,45,120,0.5); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .container-custom {
+    padding: 0 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 80px 0;
+  }
+  .container-custom {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-padding {
+    padding: 64px 0;
+  }
+  .container-custom {
+    padding: 0 20px;
+  }
+}
+
 /* ─── Noise Overlay ──────────────────────────────────────────────────────────── */
 .noise-overlay {
   position: fixed;

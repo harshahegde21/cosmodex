@@ -10,7 +10,7 @@ export default function Footer() {
         zIndex: 2,
         background: "#000000",
         borderTop: "1px solid rgba(255,255,255,0.05)",
-        padding: "52px 0 36px",
+        padding: "72px 0 48px",
         overflow: "hidden",
       }}
     >
