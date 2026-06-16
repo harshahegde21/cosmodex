@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./dashboard.css";
 
 const ayahaFont = localFont({
   src: "../../../fonts/ayaha-2-font/AyahaRegularDemowthswshes-7OLKK.ttf",
