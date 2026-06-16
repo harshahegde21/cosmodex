@@ -37,7 +37,7 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border-subtle bg-bg-base/90 backdrop-blur-md">
+    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-bg-base/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 gap-4">
 
         {/* ── Logo ── */}
