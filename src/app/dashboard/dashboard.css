@@ -189,6 +189,28 @@
     background-color: rgba(158, 0, 246, 0.05);
   }
 
+  .dashboard-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-btn);
+    box-shadow: var(--shadow-accent);
+    transition: all 0.15s;
+  }
+  .dashboard-btn-primary:hover {
+    background-color: var(--color-accent-bright);
+    box-shadow: var(--shadow-glow);
+  }
+  .dashboard-btn-primary:active {
+    background-color: var(--color-accent-dim);
+  }
+
   .badge {
     display: inline-flex;
     align-items: center;

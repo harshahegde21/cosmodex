@@ -63,7 +63,7 @@ export default function Navbar() {
               onMouseEnter={() => setActiveDropdown(item.label)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="nav-link group">
+              <button className="nav-link group flex items-center gap-1.5">
                 <item.icon size={15} className="opacity-70 group-hover:opacity-100" />
                 {item.label}
                 {item.children && (
@@ -132,7 +132,7 @@ export default function Navbar() {
           </button>
 
           {/* Join Crew CTA */}
-          <Link href="#" id="navbar-join-crew" className="btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
+          <Link href="#" id="navbar-join-crew" className="dashboard-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
             Join Crew
           </Link>
 
