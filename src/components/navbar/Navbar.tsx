@@ -38,7 +38,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border-subtle bg-bg-base/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-container items-center justify-between px-6 gap-4">
+      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 gap-4">
 
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
@@ -132,7 +132,7 @@ export default function Navbar() {
           </button>
 
           {/* Join Crew CTA */}
-          <Link href="#" id="navbar-join-crew" className="btn-primary hidden sm:inline-flex">
+          <Link href="#" id="navbar-join-crew" className="btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
             Join Crew
           </Link>
 

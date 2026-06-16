@@ -120,6 +120,19 @@
   100% { clip-path: inset(0 -20% 0 0); }
 }
 
+@layer base {
+  .dashboard-wrapper h1,
+  .dashboard-wrapper h2,
+  .dashboard-wrapper h3,
+  .dashboard-wrapper h4,
+  .dashboard-wrapper h5,
+  .dashboard-wrapper h6 {
+    font-family: var(--font-lato);
+  }
+
+  /* Keep Ayaha for Welcome Banner but everything else Lato */
+}
+
 @layer components {
   .card {
     background-color: var(--color-bg-surface);

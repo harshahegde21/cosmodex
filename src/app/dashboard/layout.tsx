@@ -18,7 +18,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`min-h-screen bg-bg-base text-text-primary font-lato antialiased selection:bg-accent/30 selection:text-white ${ayahaFont.variable}`}>
+    <div className={`dashboard-wrapper min-h-screen bg-bg-base text-text-primary font-lato antialiased selection:bg-accent/30 selection:text-white ${ayahaFont.variable}`}>
       {children}
     </div>
   );

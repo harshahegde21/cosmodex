@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Star, Flame, Shield, Award, Edit2 } from "lucide-react";
 
 const stats = [
-  { icon: Star,   label: "Total XP",    value: "1,240",  color: "text-xp-gold"  },
-  { icon: Flame,  label: "Day Streak",  value: "7",      color: "text-streak"   },
-  { icon: Shield, label: "Rank",        value: "Bronze", color: "text-text-secondary" },
-  { icon: Award,  label: "Badges",      value: "3",      color: "text-badge"    },
+  { icon: Star, label: "Total XP", value: "1,240", color: "text-xp-gold" },
+  { icon: Flame, label: "Day Streak", value: "7", color: "text-streak" },
+  { icon: Shield, label: "Rank", value: "Bronze", color: "text-text-secondary" },
+  { icon: Award, label: "Badges", value: "3", color: "text-badge" },
 ];
 
 export default function ProfileCard() {
@@ -36,7 +36,7 @@ export default function ProfileCard() {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="font-black text-text-primary truncate text-lg tracking-tight">
-              @astronaut
+              @priyanshu
             </p>
             <button
               id="profile-edit"
