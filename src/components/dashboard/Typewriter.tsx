@@ -12,17 +12,21 @@ export function Typewriter({ messages }: { messages: string[] }) {
     let timer: NodeJS.Timeout;
     const i = loopNum % messages.length;
     const fullText = messages[i];
+    // Avoid calling setState synchronously inside the effect body.
+    // Use local variables for speed and defer state transitions via timeouts.
+    const localTypingSpeed = isDeleting ? 30 : 50;
 
     if (isDeleting) {
-      setTypingSpeed(30);
       if (text === "") {
-        setIsDeleting(false);
-        setLoopNum(loopNum + 1);
-        setTypingSpeed(50);
+        // Defer the transition to avoid cascading renders
+        timer = setTimeout(() => {
+          setIsDeleting(false);
+          setLoopNum((prev) => prev + 1);
+        }, 100);
       } else {
         timer = setTimeout(() => {
           setText(fullText.substring(0, text.length - 1));
-        }, typingSpeed);
+        }, localTypingSpeed);
       }
     } else {
       if (text === fullText) {
@@ -32,7 +36,7 @@ export function Typewriter({ messages }: { messages: string[] }) {
       } else {
         timer = setTimeout(() => {
           setText(fullText.substring(0, text.length + 1));
-        }, typingSpeed);
+        }, localTypingSpeed);
       }
     }
 

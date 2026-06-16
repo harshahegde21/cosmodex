@@ -84,7 +84,7 @@ export default function WelcomeBanner() {
           </h1>
 
           <p className="text-text-secondary text-sm sm:text-[15px] mb-8 max-w-lg">
-            Your coding journey awaits-but first let's find something to learn.
+            Your coding journey awaits-but first let&apos;s find something to learn.
           </p>
 
           <Link
