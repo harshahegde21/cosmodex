@@ -6,7 +6,6 @@ export function Typewriter({ messages }: { messages: string[] }) {
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
-  const [typingSpeed, setTypingSpeed] = useState(50);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -41,7 +40,7 @@ export function Typewriter({ messages }: { messages: string[] }) {
     }
 
     return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, typingSpeed, messages]);
+  }, [text, isDeleting, loopNum, messages]);
 
   return (
     <span>
