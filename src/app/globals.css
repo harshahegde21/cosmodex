@@ -31,6 +31,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Hitchcut";
+  src: url("/fonts/Hitchcut Font/Hitchcut-typeface/Hitchcut-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* ── Fonts ──────────────────────────────────────────────── */
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -61,17 +69,17 @@
   --color-bg-elevated: #1C1929;
   --color-bg-hover: #252136;
 
-  /* ── Dashboard Accent Colors ───────────────────────────── */
-  --color-accent: #9E00F6;
-  --color-accent-bright: #B833FF;
-  --color-accent-dim: #7A00C4;
-  --color-accent-glow: rgba(158, 0, 246, 0.2);
+  /* ── Dashboard Accent Colors (Fuchsia — matching profile/onboarding) ── */
+  --color-accent: #D95FD1;
+  --color-accent-bright: #E873C3;
+  --color-accent-dim: #8D37D6;
+  --color-accent-glow: rgba(217, 95, 209, 0.2);
 
   /* ── Dashboard Text Colors ─────────────────────────────── */
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #A9A8BE;
   --color-text-muted: #6B6A85;
-  --color-text-accent: #C97EFF;
+  --color-text-accent: #E873C3;
 
   /* ── Dashboard Semantic Colors ─────────────────────────── */
   --color-xp-gold: #F5C842;
@@ -84,7 +92,7 @@
   /* ── Dashboard Border Colors ───────────────────────────── */
   --color-border-subtle: rgba(255, 255, 255, 0.08);
   --color-border-medium: rgba(255, 255, 255, 0.14);
-  --color-border-accent: rgba(158, 0, 246, 0.4);
+  --color-border-accent: rgba(217, 95, 209, 0.4);
 
   /* ── Dashboard Radii ───────────────────────────────────── */
   --radius-card: 12px;
@@ -93,17 +101,17 @@
 
   /* ── Dashboard Shadows ─────────────────────────────────── */
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-accent: 0 0 20px rgba(158, 0, 246, 0.35);
-  --shadow-glow: 0 0 40px rgba(158, 0, 246, 0.2);
+  --shadow-accent: 0 0 20px rgba(217, 95, 209, 0.35);
+  --shadow-glow: 0 0 40px rgba(217, 95, 209, 0.2);
   --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.06);
   --shadow-bento: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --shadow-bento-hover: 0 12px 48px rgba(158, 0, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  --shadow-bento-glow: 0 0 30px rgba(158, 0, 246, 0.25), inset 0 0 20px rgba(158, 0, 246, 0.1);
+  --shadow-bento-hover: 0 12px 48px rgba(217, 95, 209, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-bento-glow: 0 0 30px rgba(217, 95, 209, 0.25), inset 0 0 20px rgba(217, 95, 209, 0.1);
 
   /* ── Dashboard Background Gradients ────────────────────── */
-  --background-image-accent-gradient: linear-gradient(135deg, #9E00F6 0%, #B833FF 100%);
+  --background-image-accent-gradient: linear-gradient(135deg, #E873C3 0%, #D95FD1 35%, #C453D6 65%, #8D37D6 100%);
   --background-image-surface-gradient: linear-gradient(180deg, #1A1835 0%, #150F30 100%);
-  --background-image-bento-gradient: radial-gradient(circle at top left, rgba(158,0,246,0.15) 0%, transparent 60%), linear-gradient(180deg, rgba(34,31,61,0.4) 0%, rgba(26,24,53,0.8) 100%);
+  --background-image-bento-gradient: radial-gradient(circle at top left, rgba(217,95,209,0.15) 0%, transparent 60%), linear-gradient(180deg, rgba(34,31,61,0.4) 0%, rgba(26,24,53,0.8) 100%);
   --background-image-grid-pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm39 39V1H1v38h38z' fill='rgba(255, 255, 255, 0.03)' fill-rule='evenodd'/%3E%3C/svg%3E");
   --background-image-grid-pattern-sm: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm19 19V1H1v18h18z' fill='rgba(255, 255, 255, 0.02)' fill-rule='evenodd'/%3E%3C/svg%3E");
 
@@ -282,8 +290,9 @@ h4, h5, h6 {
 }
 
 /* ─── Typography Utility Classes ────────────────────────────────────────────── */
+.dashboard-wrapper .font-display,
 .font-display {
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), sans-serif !important;
   font-weight: 400;
   letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
@@ -712,15 +721,9 @@ h4, h5, h6 {
   100% { clip-path: inset(0 -20% 0 0); }
 }
 
-/* ── Dashboard Heading Font Override ──────────────────────────────────────────── */
-.dashboard-wrapper h1,
-.dashboard-wrapper h2,
-.dashboard-wrapper h3,
-.dashboard-wrapper h4,
-.dashboard-wrapper h5,
-.dashboard-wrapper h6 {
-  font-family: "Lato", sans-serif !important;
-}
+/* ── Dashboard Heading Font ──────────────────────────────────────────────────── */
+/* Headings use font-display (Hitchcut) via globals h1-h4 rule (line ~261) */
+/* No Lato override — Hitchcut renders naturally on all dashboard headings */
 
 /* Keep Ayaha for Welcome Banner but everything else Lato */
 
@@ -750,21 +753,23 @@ h4, h5, h6 {
   .bento-card {
     position: relative;
     overflow: hidden;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.02);
     border-radius: 20px;
     box-shadow: var(--shadow-bento);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
   .bento-card-interactive {
     position: relative;
     overflow: hidden;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.02);
     border-radius: 20px;
     box-shadow: var(--shadow-bento);
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     transition: all 0.5s ease-out;
   }
   .bento-card-interactive:hover {
@@ -782,7 +787,7 @@ h4, h5, h6 {
     z-index: 0;
   }
   .bento-card-interactive:hover::before {
-    background-color: rgba(158, 0, 246, 0.05);
+    background-color: rgba(217, 95, 209, 0.05);
   }
 
   /* ── Dashboard Primary Button ─────────────────────────────────────────────────── */
@@ -791,21 +796,23 @@ h4, h5, h6 {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: var(--color-accent);
+    background: linear-gradient(135deg, #E873C3 0%, #D95FD1 35%, #C453D6 65%, #8D37D6 100%);
     color: #ffffff;
     font-weight: 700;
     font-size: 0.875rem;
     padding: 0.625rem 1.25rem;
     border-radius: var(--radius-btn);
-    box-shadow: var(--shadow-accent);
-    transition: all 0.15s;
+    box-shadow: 0 0 20px rgba(232, 115, 195, 0.35), 0 0 40px rgba(217, 95, 209, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .dashboard-btn-primary:hover {
-    background-color: var(--color-accent-bright);
-    box-shadow: var(--shadow-glow);
+    transform: scale(1.04) translateY(-2px);
+    filter: brightness(1.15);
+    box-shadow: 0 0 30px rgba(232, 115, 195, 0.6), 0 0 60px rgba(217, 95, 209, 0.45);
   }
   .dashboard-btn-primary:active {
-    background-color: var(--color-accent-dim);
+    transform: scale(0.98);
   }
 
   /* ── Dashboard Badge (scoped to avoid landing .badge conflict) ────────────────── */
@@ -842,6 +849,6 @@ h4, h5, h6 {
 
 /* ── Dashboard Focus Ring ─────────────────────────────────────────────────────── */
 .focus-ring:focus-visible {
-  outline: 2px solid rgba(158, 0, 246, 0.7);
+  outline: 2px solid rgba(217, 95, 209, 0.7);
   outline-offset: 2px;
 }

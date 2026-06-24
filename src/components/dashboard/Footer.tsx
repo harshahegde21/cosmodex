@@ -65,7 +65,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-[#0B0C10] border-t border-white/10 pt-16 pb-8 px-6 sm:px-12 mt-12">
+    <footer className="w-full relative z-10 bg-[#0B0C10] border-t border-white/10 pt-16 pb-8 px-6 sm:px-12 mt-12">
       <div className="max-w-[1400px] mx-auto">
 
         {/* Top Header Row */}

@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "Learn",    href: "#courses"      },
@@ -10,299 +12,97 @@ const NAV_LINKS = [
   { label: "Pricing",  href: "#pricing"      },
 ];
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+export default function NavbarOriginal() {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  const go = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (!href.startsWith("#")) return;
     e.preventDefault();
     document.getElementById(href.slice(1))?.scrollIntoView({ behavior: "smooth" });
-    setMenuOpen(false);
-  }, []);
-
-  const pillStyle: React.CSSProperties = {
-    height:               scrolled ? "60px" : "68px",
-    borderRadius:         "100px",
-    background:           scrolled ? "rgba(5,5,8,0.88)" : "rgba(5,5,8,0.55)",
-    backdropFilter:       "blur(28px) saturate(1.6)",
-    WebkitBackdropFilter: "blur(28px) saturate(1.6)",
-    border:               scrolled
-      ? "1px solid rgba(255,255,255,0.11)"
-      : "1px solid rgba(255,255,255,0.07)",
-    boxShadow: scrolled
-      ? "0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)"
-      : "0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)",
-    transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
-    display:    "flex",
-    alignItems: "center",
-    padding:    "0 22px 0 16px",
+    setMobileOpen(false);
   };
 
   return (
-    <>
-      {/* ── Navbar pill — always visible ────────────────────────────────── */}
-      <motion.nav
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        aria-label="Main navigation"
-        style={{
-          position:    "fixed",
-          top:         scrolled ? "12px" : "20px",
-          left:        isMobile ? "16px" : "0",
-          right:       isMobile ? "16px" : "0",
-          marginLeft:  "auto",
-          marginRight: "auto",
-          zIndex:      50,
-          width:       isMobile ? "calc(100vw - 32px)" : "fit-content",
-          minWidth:    isMobile ? "auto" : "600px",
-          transition:  "top 0.4s cubic-bezier(0.16,1,0.3,1)",
-        }}
-      >
-        <div style={pillStyle}>
+    <header className="fixed top-0 z-50 w-full border-b border-white/8 bg-white/5 backdrop-blur-xl">
+      <div className="flex h-16 w-full items-center justify-between px-6 sm:px-10 gap-4">
 
-          {/* ── Logo image + wordmark ── */}
+        {/* ── Logo ── */}
+        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <Image
+            src="/images/logo.png"
+            alt="CosmoDeX logo"
+            width={28}
+            height={28}
+            className="rounded-sm"
+          />
+          <span className="font-lato font-black text-xl text-white tracking-wide">
+            CosmoDeX
+          </span>
+        </Link>
+
+        {/* ── Desktop Links ── */}
+        <nav className="hidden md:flex items-center justify-center flex-1 gap-6">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={(e) => go(e, link.href)}
+              className="text-sm font-bold text-white/60 hover:text-white transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* ── Right Controls ── */}
+        <div className="hidden md:flex items-center gap-4 shrink-0">
           <a
-            href="#"
-            onClick={(e) => go(e, "#hero")}
-            style={{ display: "flex", alignItems: "center", gap: "10px",
-                     textDecoration: "none", flexShrink: 0 }}
-            aria-label="CosmoDeX home"
+            href="#signup"
+            className="cosmo-btn-primary px-6 py-2 rounded-xl text-sm font-bold text-white"
           >
-            <Image
-              src="/logo.png"
-              alt="CosmoDeX"
-              width={140}
-              height={40}
-              style={{ height: "40px", width: "auto", display: "block" }}
-              priority
-            />
-            <span style={{
-              fontWeight: 700,
-              fontSize: "17px",
-              letterSpacing: "-0.02em",
-              color: "#ffffff",
-              whiteSpace: "nowrap",
-            }}>
-              CosmoDeX
-            </span>
+            Sign Up Free
           </a>
+        </div>
 
-          {/* ── Separator ── */}
-          {!isMobile && (
-            <div style={{ width: "1px", height: "22px",
-                          background: "rgba(255,255,255,0.08)",
-                          margin: "0 18px", flexShrink: 0 }} />
-          )}
+        {/* ── Mobile Menu Toggle ── */}
+        <button
+          className="md:hidden p-2 text-white/70 hover:text-white"
+          onClick={() => setMobileOpen(true)}
+        >
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
 
-          {/* ── Nav links (desktop) ── */}
-          {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center", gap: "2px",
-                          flex: 1, justifyContent: "center" }}>
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(e) => go(e, link.href)}
-                  style={{
-                    padding: "7px 14px", borderRadius: "100px",
-                    fontSize: "14px", fontWeight: 500,
-                    color: "rgba(240,230,255,0.6)",
-                    textDecoration: "none", whiteSpace: "nowrap",
-                    transition: "all 0.18s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    const t = e.currentTarget as HTMLElement;
-                    t.style.color = "#fff";
-                    t.style.background = "rgba(255,255,255,0.07)";
-                  }}
-                  onMouseLeave={(e) => {
-                    const t = e.currentTarget as HTMLElement;
-                    t.style.color = "rgba(240,230,255,0.6)";
-                    t.style.background = "transparent";
-                  }}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          )}
+      </div>
 
-          {/* ── Separator ── */}
-          {!isMobile && (
-            <div style={{ width: "1px", height: "22px",
-                          background: "rgba(255,255,255,0.08)",
-                          margin: "0 18px", flexShrink: 0 }} />
-          )}
-
-          {/* ── CTA (desktop) ── */}
-          {!isMobile && (
+      {/* ── Mobile Menu ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-16 left-0 w-full bg-[#1A1525]/95 backdrop-blur-xl border-b border-white/10 p-4 md:hidden flex flex-col gap-2"
+          >
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => go(e, link.href)}
+                className="px-4 py-3 text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
             <a
               href="#signup"
-              style={{
-                display: "inline-flex", alignItems: "center",
-                padding: "9px 22px", borderRadius: "100px",
-                fontSize: "14px", fontWeight: 600, color: "#fff",
-                background: "linear-gradient(135deg,#ff2d78,#9b30ff)",
-                textDecoration: "none", whiteSpace: "nowrap",
-                flexShrink: 0,
-                transition: "all 0.22s ease",
-              }}
-              onMouseEnter={(e) => {
-                const t = e.currentTarget as HTMLElement;
-                t.style.transform = "translateY(-1px)";
-                t.style.boxShadow = "0 6px 22px rgba(255,45,120,0.45)";
-              }}
-              onMouseLeave={(e) => {
-                const t = e.currentTarget as HTMLElement;
-                t.style.transform = "translateY(0)";
-                t.style.boxShadow = "none";
-              }}
+              onClick={() => setMobileOpen(false)}
+              className="mt-4 cosmo-btn-primary w-full px-6 py-3 rounded-xl text-sm font-bold text-center"
             >
-              Sign Up
+              Sign Up Free
             </a>
-          )}
-
-          {/* ── Hamburger (mobile) ── */}
-          {isMobile && (
-            <>
-              <div style={{ flex: 1 }} />
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                style={{
-                  width: "38px", height: "38px", borderRadius: "50%",
-                  cursor: "pointer",
-                  background: menuOpen
-                    ? "rgba(255,45,120,0.12)"
-                    : "rgba(255,255,255,0.06)",
-                  border: `1px solid ${menuOpen
-                    ? "rgba(255,45,120,0.3)"
-                    : "rgba(255,255,255,0.08)"}`,
-                  display: "flex", flexDirection: "column",
-                  alignItems: "center", justifyContent: "center",
-                  gap: "5px", padding: 0, transition: "all 0.22s ease",
-                }}
-              >
-                {[
-                  menuOpen ? "rotate(45deg) translate(4.5px,4.5px)"   : "none",
-                  "none",
-                  menuOpen ? "rotate(-45deg) translate(4.5px,-4.5px)" : "none",
-                ].map((transform, i) => (
-                  <span key={i} style={{
-                    display: "block", width: "15px", height: "1.5px",
-                    background: "rgba(240,230,255,0.85)", borderRadius: "1px",
-                    transition: "all 0.28s ease",
-                    transform,
-                    opacity: i === 1 && menuOpen ? 0 : 1,
-                  }} />
-                ))}
-              </button>
-            </>
-          )}
-
-        </div>
-      </motion.nav>
-
-      {/* ── Mobile dropdown ─────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {menuOpen && isMobile && (
-          <>
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0,   scale: 1    }}
-              exit={{    opacity: 0, y: -8,   scale: 0.97 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                position: "fixed", top: "92px", left: "50%",
-                transform: "translateX(-50%)",
-                width: "min(calc(100vw - 32px), 360px)",
-                zIndex: 49,
-                background: "rgba(5,5,8,0.95)",
-                backdropFilter: "blur(32px)",
-                WebkitBackdropFilter: "blur(32px)",
-                border: "1px solid rgba(255,255,255,0.09)",
-                borderRadius: "20px", padding: "10px",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-              }}
-            >
-              {NAV_LINKS.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  onClick={(e) => go(e, link.href)}
-                  style={{
-                    display: "flex", alignItems: "center", gap: "10px",
-                    padding: "11px 14px", borderRadius: "12px",
-                    fontSize: "15px", fontWeight: 500,
-                    color: "rgba(240,230,255,0.72)", textDecoration: "none",
-                    transition: "all 0.18s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    const t = e.currentTarget as HTMLElement;
-                    t.style.background = "rgba(255,255,255,0.05)";
-                    t.style.color = "#fff";
-                  }}
-                  onMouseLeave={(e) => {
-                    const t = e.currentTarget as HTMLElement;
-                    t.style.background = "transparent";
-                    t.style.color = "rgba(240,230,255,0.72)";
-                  }}
-                >
-                  <span style={{ width: "5px", height: "5px", borderRadius: "50%",
-                    background: "linear-gradient(135deg,#ff2d78,#9b30ff)",
-                    flexShrink: 0 }} />
-                  {link.label}
-                </motion.a>
-              ))}
-
-              <div style={{ height: "1px", margin: "8px 0",
-                background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent)" }} />
-
-              <a
-                href="#signup"
-                style={{
-                  display: "flex", justifyContent: "center",
-                  padding: "12px", borderRadius: "12px",
-                  fontSize: "15px", fontWeight: 600, color: "#fff",
-                  background: "linear-gradient(135deg,#ff2d78,#9b30ff)",
-                  textDecoration: "none",
-                }}
-              >
-                ✦ Sign Up Free
-              </a>
-            </motion.div>
-
-            {/* backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setMenuOpen(false)}
-              style={{ position: "fixed", inset: 0, zIndex: 48,
-                background: "rgba(0,0,0,0.35)" }}
-              aria-hidden="true"
-            />
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   );
 }

@@ -8,10 +8,7 @@ export default function CrewPromoCard() {
   if (dismissed) return null;
 
   return (
-    <div className="bento-card-interactive p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between relative group overflow-hidden h-full">
-      {/* Background Glows & Gradients */}
-      <div className="absolute inset-0 bg-accent-gradient opacity-10 mix-blend-overlay" />
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-accent-bright to-transparent opacity-80" />
+    <div className="cosmo-glass-panel p-6 md:p-8 border border-white/10 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between relative group overflow-hidden h-full">
 
       {/* Dismiss */}
       <button
@@ -26,7 +23,7 @@ export default function CrewPromoCard() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-start gap-4 flex-1">
         <div className="flex items-center gap-3">
-          <div className="shrink-0 w-12 h-12 rounded-xl bg-accent-bright/20 border border-accent-bright/30 flex items-center justify-center shadow-glow backdrop-blur-md group-hover:scale-110 transition-transform duration-500">
+          <div className="shrink-0 w-12 h-12 rounded-xl bg-[#E873C3]/20 border border-[#E873C3]/30 flex items-center justify-center shadow-[0_0_20px_rgba(232,115,195,0.25)] backdrop-blur-md group-hover:scale-110 transition-transform duration-500">
             <Users size={22} className="text-white drop-shadow-md" />
           </div>
           <span className="badge bg-white/10 border border-white/20 text-white text-xs px-3 py-1 font-black tracking-widest shadow-sm">
@@ -35,7 +32,7 @@ export default function CrewPromoCard() {
         </div>
 
         <div>
-          <h3 className="font-black text-white text-xl md:text-2xl leading-tight mb-2 drop-shadow-md">
+          <h3 className="font-display font-bold text-white text-xl md:text-2xl leading-tight mb-2 drop-shadow-md tracking-wide">
             Get unlimited access to learning
           </h3>
           <p className="text-base text-white/80 leading-relaxed max-w-lg">
@@ -63,7 +60,7 @@ export default function CrewPromoCard() {
       <div className="relative z-10 shrink-0 w-full md:w-auto mt-2 md:mt-0">
         <button
           id="crew-promo-learn-more"
-          className="w-full md:w-auto px-8 py-4 bg-white text-bg-base font-black rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+          className="cosmo-btn-primary w-full md:w-auto px-8 py-4 rounded-xl font-black text-base"
         >
           Learn More <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
         </button>

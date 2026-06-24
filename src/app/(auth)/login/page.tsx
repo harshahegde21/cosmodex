@@ -3,6 +3,12 @@ import { ManualLoginForm } from '@/features/auth/components/ManualLoginForm';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import localFont from 'next/font/local';
+
+const hitchcut = localFont({ 
+  src: '../../../../public/fonts/Hitchcut Font/Hitchcut-typeface/Hitchcut-Regular.ttf',
+  variable: '--font-hitchcut'
+});
 
 export default async function LoginPage() {
   const supabase = await createClient();
@@ -16,11 +22,14 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold mb-8 text-center">
+    <main className={`flex min-h-screen flex-col items-center justify-center p-24 bg-[#080312] text-white ${hitchcut.variable}`}>
+      <h1 
+        className="text-5xl font-normal mb-8 text-center tracking-wide" 
+        style={{ fontFamily: 'var(--font-hitchcut)' }}
+      >
         Welcome to CosmoDex
       </h1>
-      <div className="border border-gray-300 p-8 rounded-lg shadow-sm">
+      <div className="border border-white/10 bg-[#1A1525]/80 p-8 rounded-2xl shadow-sm backdrop-blur-md">
         {dbUser ? (
           <div className="text-center">
             <h2 className="text-2xl mb-4 text-green-600">Logged In!</h2>

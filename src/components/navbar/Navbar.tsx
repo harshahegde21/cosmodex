@@ -20,16 +20,15 @@ const navItems = [
     label: "Learn",
     icon: BookOpen,
     href: "#",
-    children: ["Courses", "Tracks", "Tutorials"],
+    isMegaMenu: true,
   },
   {
     label: "Practice",
     icon: Code2,
     href: "#",
-    children: ["Challenge Packs", "Builds", "#30NitesOfCode"],
   },
-  { label: "Build", icon: Hammer, href: "#" },
-  { label: "Community", icon: Users, href: "#", children: ["Crews", "Forum", "Events"] },
+  { label: "Battle", icon: Hammer, href: "#" },
+  { label: "Leaderboard", icon: Users, href: "#" },
 ];
 
 export default function Navbar() {
@@ -37,8 +36,8 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-bg-base/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 gap-4">
+    <header className="fixed top-0 z-50 w-full border-b border-white/8 bg-white/5 backdrop-blur-xl">
+      <div className="flex h-16 w-full items-center justify-between px-6 sm:px-10 gap-4">
 
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
@@ -66,7 +65,7 @@ export default function Navbar() {
               <button className="nav-link group flex items-center gap-1.5">
                 <item.icon size={15} className="opacity-70 group-hover:opacity-100" />
                 {item.label}
-                {item.children && (
+                {item.isMegaMenu && (
                   <ChevronDown
                     size={13}
                     className={`ml-0.5 transition-transform duration-150 ${activeDropdown === item.label ? "rotate-180" : ""
@@ -75,17 +74,33 @@ export default function Navbar() {
                 )}
               </button>
 
-              {item.children && activeDropdown === item.label && (
-                <div className="absolute top-full left-0 mt-1 w-44 card py-1.5 shadow-card animate-fade-in">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child}
-                      href="#"
-                      className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-colors duration-100"
-                    >
-                      {child}
-                    </Link>
-                  ))}
+              {item.isMegaMenu && activeDropdown === item.label && (
+                <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#050508] py-5 px-6 animate-fade-in flex flex-col gap-5 rounded-xl border border-[#E873C3]/20 shadow-[0_10px_40px_rgba(0,0,0,0.8),_0_0_20px_rgba(232,115,195,0.15)]">
+                  <h4 className="text-[11px] font-bold text-[#E873C3] uppercase tracking-widest">Recommended</h4>
+                  
+                  <Link href="#" className="flex gap-4 items-start group">
+                    <div className="w-12 h-12 rounded-lg bg-[#2e1065]/50 shrink-0 border border-[#8b5cf6]/30 overflow-hidden flex items-center justify-center">
+                      <BookOpen size={24} className="text-[#8b5cf6]" />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-bold text-white group-hover:text-[#E873C3] transition-colors">Python</h5>
+                      <p className="text-xs text-white/60 mt-1 leading-snug">Learn the basics of programming with beginner-friendly exercises.</p>
+                    </div>
+                  </Link>
+
+                  <Link href="#" className="flex gap-4 items-start group">
+                    <div className="w-12 h-12 rounded-lg bg-blue-500/20 shrink-0 border border-blue-500/30 overflow-hidden flex items-center justify-center">
+                      <Code2 size={24} className="text-blue-400" />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-bold text-white group-hover:text-[#E873C3] transition-colors">GitHub Copilot</h5>
+                      <p className="text-xs text-white/60 mt-1 leading-snug">Learn how to use GitHub Copilot which helps you write code faster and with less effort.</p>
+                    </div>
+                  </Link>
+
+                  <Link href="/learn" className="mt-2 w-full py-2 bg-[#E873C3]/10 border border-[#E873C3]/30 text-[#E873C3] text-center text-xs font-bold rounded-md hover:bg-[#E873C3]/20 transition-colors shadow-[0_0_15px_rgba(232,115,195,0.15)]">
+                    All Courses &gt;
+                  </Link>
                 </div>
               )}
             </div>
@@ -94,24 +109,6 @@ export default function Navbar() {
 
         {/* ── Right controls ── */}
         <div className="flex items-center gap-2">
-          {/* Search */}
-          <button
-            id="navbar-search"
-            aria-label="Search"
-            className="btn-icon focus-ring hidden sm:flex"
-          >
-            <Search size={16} />
-          </button>
-
-          {/* Notifications */}
-          <button
-            id="navbar-notifications"
-            aria-label="Notifications"
-            className="btn-icon focus-ring relative hidden sm:flex"
-          >
-            <Bell size={16} />
-            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-          </button>
 
           {/* Avatar */}
           <button
@@ -151,7 +148,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-border-subtle bg-bg-surface px-4 py-3 space-y-1 animate-fade-in">
           {navItems.map((item) => (
-            <Link key={item.label} href="#" className="nav-link w-full">
+            <Link key={item.label} href={item.href || "#"} className="nav-link w-full">
               <item.icon size={15} />
               {item.label}
             </Link>
