@@ -1,4 +1,4 @@
-import Navbar from "@/components/landing/NavbarOriginal";
+import Navbar from "@/components/navbar/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import CoursesSection from "@/components/landing/CoursesSection";
 import BattleArenaSection from "@/components/landing/BattleArenaSection";

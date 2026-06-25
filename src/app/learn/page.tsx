@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/components/landing/NavbarOriginal";
+import Navbar from "@/components/navbar/Navbar";
 import { motion } from "framer-motion";
 import { Shield, Swords, Crown } from "lucide-react";
 
