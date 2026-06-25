@@ -10,9 +10,9 @@ import mascotPupil from "./Mascot - Pupil.png";
 
 // Responsive Viewport Positions
 const layoutVariants: Record<string, { top: string; left: string; x: string; y: string }> = {
-  "bottom-right": { top: "85vh", left: "85vw", x: "-50%", y: "-50%" },
+  "bottom-right": { top: "calc(100vh - 110px)", left: "calc(100vw - 90px)", x: "-50%", y: "-50%" },
   "center": { top: "50vh", left: "50vw", x: "-50%", y: "-50%" },
-  "offset-right": { top: "50vh", left: "70vw", x: "-50%", y: "-50%" } 
+  "offset-right": { top: "50vh", left: "70vw", x: "-50%", y: "-50%" }
 };
 
 export default function Mascot() {
@@ -20,7 +20,7 @@ export default function Mascot() {
   const rightEyeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const boundaryRef = useRef<HTMLDivElement>(null);
-  
+
   const pathname = usePathname();
 
   // Use Framer Motion's manual animation controls for the teleport sequence
@@ -76,7 +76,7 @@ export default function Mascot() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setIsIdle(false);
-      
+
       if (idleTimer.current) clearTimeout(idleTimer.current);
       idleTimer.current = setTimeout(() => {
         setIsIdle(true);
@@ -92,7 +92,7 @@ export default function Mascot() {
       const deltaY = e.clientY - mascotCenterY;
       const angle = Math.atan2(deltaY, deltaX);
 
-      const maxRadius = 6; 
+      const maxRadius = 6;
       const pupilX = Math.cos(angle) * maxRadius;
       const pupilY = Math.sin(angle) * maxRadius;
 
@@ -114,7 +114,7 @@ export default function Mascot() {
       rightEyeRef.current.style.transition = "transform 0.3s ease-out";
       leftEyeRef.current.style.transform = `translate(0px, 0px)`;
       rightEyeRef.current.style.transform = `translate(0px, 0px)`;
-      
+
       setTimeout(() => {
         if (leftEyeRef.current) leftEyeRef.current.style.transition = "none";
         if (rightEyeRef.current) rightEyeRef.current.style.transition = "none";
@@ -134,11 +134,11 @@ export default function Mascot() {
   return (
     <div ref={boundaryRef} className="fixed 
     top-0 left-0 w-screen h-screen pointer-events-none z-[9999] overflow-hidden">
-      
-      <motion.div 
+
+      <motion.div
         ref={containerRef}
-        drag 
-        dragConstraints={boundaryRef} 
+        drag
+        dragConstraints={boundaryRef}
         dragElastic={0.2}
         dragMomentum={false}
         // Initialize position on first mount
@@ -147,9 +147,9 @@ export default function Mascot() {
         animate={controls}
         className="absolute pointer-events-auto w-[150px] h-[200px] cursor-grab active:cursor-grabbing touch-none select-none"
       >
-        
+
         {/* Dark Theme Chat Bubble */}
-        <div 
+        <div
           className={`absolute -top-[70px] -right-[90px] w-[220px] px-4 py-3 rounded-2xl font-medium tracking-wide pointer-events-none transition-all duration-500 ease-out
             bg-[#160E2B]/95 text-cyan-400 border border-cyan-400/30 shadow-[0_4px_15px_rgba(0,255,255,0.15)]
             ${message ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2.5"}`}
@@ -157,17 +157,14 @@ export default function Mascot() {
           {message}
         </div>
 
-        <motion.div 
-          animate={{ y: [0, -12, 0], transition: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-          className="absolute w-full h-full"
-        >
-          <Image 
+        <motion.div className="absolute w-full h-full">
+          <Image
             src={mascotBody}
-            alt="Mascot Body" 
-            draggable={false} 
+            alt="Mascot Body"
+            draggable={false}
             className="absolute z-10 w-full h-auto pointer-events-none"
           />
-          
+
           {/* Left Pupil */}
           <div ref={leftEyeRef} className="absolute z-11 w-[20px] top-[52px] left-[52px]">
             <motion.div animate={blinkAnimation} style={{ originY: 0.5 }}>
@@ -177,7 +174,7 @@ export default function Mascot() {
 
           {/* Right Pupil */}
           <div ref={rightEyeRef} className="absolute z-11 w-[20px] top-[52px] right-[45px]">
-             <motion.div animate={blinkAnimation} style={{ originY: 0.5 }}>
+            <motion.div animate={blinkAnimation} style={{ originY: 0.5 }}>
               <Image src={mascotPupil} alt="Right Eye" draggable={false} className="w-full h-auto pointer-events-none" />
             </motion.div>
           </div>

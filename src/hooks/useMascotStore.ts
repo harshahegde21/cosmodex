@@ -10,7 +10,7 @@ interface MascotState {
 }
 
 export const useMascotStore = create<MascotState>((set) => ({
-  message: "Hello",
+  message: null,
   position: 'bottom-right', // Default position
   setMessage: (msg) => set({ message: msg }),
   setPosition: (pos) => set({ position: pos }),
