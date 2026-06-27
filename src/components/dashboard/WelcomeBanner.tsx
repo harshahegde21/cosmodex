@@ -1,6 +1,10 @@
 "use client";
 
-export default function WelcomeBanner() {
+interface WelcomeBannerProps {
+  username?: string;
+}
+
+export default function WelcomeBanner({ username = 'priyanshu' }: WelcomeBannerProps) {
   return (
     <div className="flex items-center gap-6 relative z-20">
       <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 animate-float">
@@ -15,7 +19,7 @@ export default function WelcomeBanner() {
 
       <div className="flex flex-col">
         <h1 className="text-2xl sm:text-4xl font-display font-normal text-white mb-1 tracking-wider flex items-center gap-2">
-          Welcome back, priyanshu! <span className="animate-wave inline-block origin-[70%_70%]">👋</span>
+          Welcome back, {username}! <span className="animate-wave inline-block origin-[70%_70%]">👋</span>
         </h1>
         <p className="text-sm sm:text-base text-white/50 font-medium">
           Ready to continue your coding journey?

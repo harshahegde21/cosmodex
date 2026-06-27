@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Learn",    href: "#courses"      },
+  { label: "Learn", href: "#courses" },
   { label: "Practice", href: "#battle-arena" },
-  { label: "Pricing",  href: "#pricing"      },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 export default function NavbarOriginal() {
@@ -57,7 +57,7 @@ export default function NavbarOriginal() {
         {/* ── Right Controls ── */}
         <div className="hidden md:flex items-center gap-4 shrink-0">
           <a
-            href="#signup"
+            href="/onboarding"
             className="cosmo-btn-primary px-6 py-2 rounded-xl text-sm font-bold text-white"
           >
             Sign Up Free
@@ -94,7 +94,7 @@ export default function NavbarOriginal() {
               </a>
             ))}
             <a
-              href="#signup"
+              href="/onboarding"
               onClick={() => setMobileOpen(false)}
               className="mt-4 cosmo-btn-primary w-full px-6 py-3 rounded-xl text-sm font-bold text-center"
             >

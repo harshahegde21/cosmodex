@@ -297,6 +297,8 @@ model users {
   xp_total                                                       Int?                    @default(0)
   level                                                          Int?                    @default(1)
   avatar_url                                                     String?
+  experience_level                                               String?
+  interests                                                      String[]                @default([])
   is_active                                                      Boolean?                @default(true)
   created_at                                                     DateTime?               @default(now()) @db.Timestamptz(6)
   last_login_at                                                  DateTime?               @db.Timestamptz(6)

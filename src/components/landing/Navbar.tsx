@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_LINKS = [
-  { label: "Learn",    href: "#courses"      },
+  { label: "Learn", href: "#courses" },
   { label: "Practice", href: "#battle-arena" },
-  { label: "Pricing",  href: "#pricing"      },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 function LogoIcon() {
@@ -23,8 +23,8 @@ function LogoIcon() {
           <stop offset="100%" stopColor="#7c22ff" />
         </radialGradient>
         <linearGradient id="nb-lr" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%"   stopColor="#ff2d78" stopOpacity="0.8" />
-          <stop offset="50%"  stopColor="#c084fc" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#ff2d78" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#c084fc" stopOpacity="0.6" />
           <stop offset="100%" stopColor="#9b30ff" stopOpacity="0.8" />
         </linearGradient>
       </defs>
@@ -33,11 +33,11 @@ function LogoIcon() {
 }
 
 export default function Navbar() {
-  const [scrolled,     setScrolled]     = useState(false);
-  const [visible,      setVisible]      = useState(false);
-  const [menuOpen,     setMenuOpen]     = useState(false);
-  const [logoHovered,  setLogoHovered]  = useState(false);
-  const [isMobile,     setIsMobile]     = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [logoHovered, setLogoHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -68,20 +68,20 @@ export default function Navbar() {
 
   /* ─── shared pill style ─────────────────────────────────────────────── */
   const pillStyle: React.CSSProperties = {
-    height:           scrolled ? "54px" : "60px",
-    borderRadius:     "100px",
-    background:       scrolled ? "rgba(5,5,8,0.88)" : "rgba(5,5,8,0.55)",
-    backdropFilter:   "blur(28px) saturate(1.6)",
+    height: scrolled ? "54px" : "60px",
+    borderRadius: "100px",
+    background: scrolled ? "rgba(5,5,8,0.88)" : "rgba(5,5,8,0.55)",
+    backdropFilter: "blur(28px) saturate(1.6)",
     WebkitBackdropFilter: "blur(28px) saturate(1.6)",
-    border:           scrolled ? "1px solid rgba(255,255,255,0.11)" : "1px solid rgba(255,255,255,0.07)",
-    boxShadow:        scrolled
+    border: scrolled ? "1px solid rgba(255,255,255,0.11)" : "1px solid rgba(255,255,255,0.07)",
+    boxShadow: scrolled
       ? "0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)"
       : "0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)",
-    transition:       "all 0.4s cubic-bezier(0.16,1,0.3,1)",
-    display:          "flex",
-    alignItems:       "center",
-    padding:          "0 20px 0 24px",
-    gap:              "0",
+    transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+    display: "flex",
+    alignItems: "center",
+    padding: "0 20px 0 24px",
+    gap: "0",
   };
 
   return (
@@ -91,22 +91,22 @@ export default function Navbar() {
         initial={{ opacity: 0, y: -12 }}
         animate={{
           opacity: visible ? 1 : 0,
-          y:       visible ? 0 : -50,
+          y: visible ? 0 : -50,
           pointerEvents: visible ? "auto" : "none",
         }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         aria-label="Main navigation"
         style={{
-          position:  "fixed",
-          top:       scrolled ? "12px" : "20px",
-          left:      isMobile ? "16px" : "0",
-          right:     isMobile ? "16px" : "0",
-          marginLeft:  "auto",
+          position: "fixed",
+          top: scrolled ? "12px" : "20px",
+          left: isMobile ? "16px" : "0",
+          right: isMobile ? "16px" : "0",
+          marginLeft: "auto",
           marginRight: "auto",
           transform: "none",
-          zIndex:    50,
-          width:     isMobile ? "calc(100vw - 32px)" : "fit-content",
-          minWidth:  isMobile ? "auto" : "580px",
+          zIndex: 50,
+          width: isMobile ? "calc(100vw - 32px)" : "fit-content",
+          minWidth: isMobile ? "auto" : "580px",
           transition: "top 0.4s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
@@ -118,8 +118,10 @@ export default function Navbar() {
             onClick={(e) => go(e, "#hero")}
             onMouseEnter={() => setLogoHovered(true)}
             onMouseLeave={() => setLogoHovered(false)}
-            style={{ display: "flex", alignItems: "center", gap: "8px",
-                     textDecoration: "none", flexShrink: 0 }}
+            style={{
+              display: "flex", alignItems: "center", gap: "8px",
+              textDecoration: "none", flexShrink: 0
+            }}
             aria-label="CosmoDeX home"
           >
             <motion.span
@@ -140,14 +142,18 @@ export default function Navbar() {
 
           {/* ── Separator ── */}
           {!isMobile && (
-            <div style={{ width: "1px", height: "20px", background: "rgba(255,255,255,0.08)",
-                          margin: "0 16px", flexShrink: 0 }} />
+            <div style={{
+              width: "1px", height: "20px", background: "rgba(255,255,255,0.08)",
+              margin: "0 16px", flexShrink: 0
+            }} />
           )}
 
           {/* ── Nav links (desktop) ── */}
           {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center", gap: "2px", flex: 1,
-                          justifyContent: "center" }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: "2px", flex: 1,
+              justifyContent: "center"
+            }}>
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.label}
@@ -179,15 +185,17 @@ export default function Navbar() {
 
           {/* ── Spacer pushes CTA to right on desktop ── */}
           {!isMobile && (
-            <div style={{ width: "1px", height: "20px", background: "rgba(255,255,255,0.08)",
-                          margin: "0 16px", flexShrink: 0 }} />
+            <div style={{
+              width: "1px", height: "20px", background: "rgba(255,255,255,0.08)",
+              margin: "0 16px", flexShrink: 0
+            }} />
           )}
 
           {/* ── CTA (desktop) ── */}
           {!isMobile && (
             <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
               <a
-                href="#signup"
+                href="/onboarding"
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "6px",
                   padding: "8px 18px", borderRadius: "100px",
@@ -230,7 +238,7 @@ export default function Navbar() {
                 }}
               >
                 {[
-                  menuOpen ? "rotate(45deg) translate(4.5px,4.5px)"  : "none",
+                  menuOpen ? "rotate(45deg) translate(4.5px,4.5px)" : "none",
                   "none",
                   menuOpen ? "rotate(-45deg) translate(4.5px,-4.5px)" : "none",
                 ].map((transform, i) => (
@@ -255,8 +263,8 @@ export default function Navbar() {
           <>
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0,   scale: 1    }}
-              exit={{    opacity: 0, y: -8,   scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 position: "fixed", top: "84px", left: "50%",
@@ -296,17 +304,21 @@ export default function Navbar() {
                     t.style.color = "rgba(240,230,255,0.72)";
                   }}
                 >
-                  <span style={{ width: "5px", height: "5px", borderRadius: "50%",
-                    background: "linear-gradient(135deg,#ff2d78,#9b30ff)", flexShrink: 0 }} />
+                  <span style={{
+                    width: "5px", height: "5px", borderRadius: "50%",
+                    background: "linear-gradient(135deg,#ff2d78,#9b30ff)", flexShrink: 0
+                  }} />
                   {link.label}
                 </motion.a>
               ))}
 
-              <div style={{ height: "1px", margin: "8px 0",
-                background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent)" }} />
+              <div style={{
+                height: "1px", margin: "8px 0",
+                background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent)"
+              }} />
 
               <a
-                href="#signup"
+                href="/onboarding"
                 style={{
                   display: "flex", justifyContent: "center",
                   padding: "12px", borderRadius: "12px",
@@ -323,8 +335,10 @@ export default function Navbar() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setMenuOpen(false)}
-              style={{ position: "fixed", inset: 0, zIndex: 48,
-                background: "rgba(0,0,0,0.35)" }}
+              style={{
+                position: "fixed", inset: 0, zIndex: 48,
+                background: "rgba(0,0,0,0.35)"
+              }}
               aria-hidden="true"
             />
           </>

@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Search,
-  Bell,
   ChevronDown,
   BookOpen,
   Code2,
@@ -31,9 +29,48 @@ const navItems = [
   { label: "Leaderboard", icon: Users, href: "#" },
 ];
 
+interface UserSession {
+  id: string;
+  username: string;
+  email: string;
+  avatarId?: string | null;
+  xpTotal?: number;
+  level?: number;
+  role?: string;
+}
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [user, setUser] = useState<UserSession | null>(null);
+
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        if (data.user) {
+          setUser(data.user);
+        }
+      } catch (err) {
+        console.error('Session check failed:', err);
+      }
+    }
+    checkSession();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+      if (res.ok) {
+        window.location.href = '/';
+      }
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/8 bg-white/5 backdrop-blur-xl">
@@ -77,7 +114,7 @@ export default function Navbar() {
               {item.isMegaMenu && activeDropdown === item.label && (
                 <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#050508] py-5 px-6 animate-fade-in flex flex-col gap-5 rounded-xl border border-[#E873C3]/20 shadow-[0_10px_40px_rgba(0,0,0,0.8),_0_0_20px_rgba(232,115,195,0.15)]">
                   <h4 className="text-[11px] font-bold text-[#E873C3] uppercase tracking-widest">Recommended</h4>
-                  
+
                   <Link href="#" className="flex gap-4 items-start group">
                     <div className="w-12 h-12 rounded-lg bg-[#2e1065]/50 shrink-0 border border-[#8b5cf6]/30 overflow-hidden flex items-center justify-center">
                       <BookOpen size={24} className="text-[#8b5cf6]" />
@@ -111,12 +148,23 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
 
           {/* Avatar */}
-          <button
-            id="navbar-avatar"
-            aria-label="User menu"
-            className="flex items-center gap-2 pl-2 pr-1 py-1 rounded-sm hover:bg-bg-elevated transition-colors duration-150 focus-ring"
-          >
-            <div className="w-7 h-7 rounded-full bg-bg-elevated border border-border-medium overflow-hidden flex items-center justify-center">
+          {user ? (
+            <div className="flex items-center gap-2 pl-2 pr-1 py-1">
+              <span className="text-sm font-bold text-white/80 hidden sm:inline-block">
+                {user.username}
+              </span>
+              <div className="w-7 h-7 rounded-full bg-bg-elevated border border-[#E873C3] overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(232,115,195,0.3)]">
+                <Image
+                  src="/images/mascot.png"
+                  alt="avatar"
+                  width={28}
+                  height={28}
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-bg-elevated border border-border-medium overflow-hidden flex items-center justify-center opacity-40">
               <Image
                 src="/images/mascot.png"
                 alt="avatar"
@@ -125,13 +173,21 @@ export default function Navbar() {
                 className="object-cover"
               />
             </div>
-            <ChevronDown size={13} className="text-text-muted hidden sm:block" />
-          </button>
+          )}
 
-          {/* Join Crew CTA */}
-          <Link href="#" id="navbar-join-crew" className="dashboard-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
-            Join Crew
-          </Link>
+          {/* Join Crew CTA or Log out */}
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="dashboard-btn-secondary inline-flex items-center px-4 py-1.5 text-sm h-9 border border-white/10 hover:bg-white/5 text-white/90 rounded-md font-bold transition-all shadow-[0_2px_8px_rgba(0,0,0,0.4)] cursor-pointer"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link href="/onboarding" id="navbar-join-crew" className="dashboard-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
+              Join Crew
+            </Link>
+          )}
 
           {/* Mobile hamburger */}
           <button
@@ -154,9 +210,18 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="pt-2 border-t border-border-subtle">
-            <Link href="#" className="btn-primary w-full justify-center">
-              Join Crew
-            </Link>
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="btn-secondary w-full justify-center py-2.5 border border-white/10 hover:bg-white/5 text-white/90 rounded-md text-sm font-bold flex"
+              >
+                Log out
+              </button>
+            ) : (
+              <Link href="/onboarding" className="btn-primary w-full justify-center">
+                Join Crew
+              </Link>
+            )}
           </div>
         </div>
       )}

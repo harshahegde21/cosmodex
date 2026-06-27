@@ -4,19 +4,48 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, Flame, Shield, Award } from "lucide-react";
 
-const stats = [
-  { icon: Star, label: "TOTAL XP", value: "1,240", color: "text-[#FFD700]", glowColor: "rgba(255,215,0,0.6)" },
-  { icon: Flame, label: "DAY STREAK", value: "7", color: "text-orange-500", glowColor: "rgba(249,115,22,0.6)" },
-  { icon: Shield, label: "RANK", value: "Bronze", color: "text-[#CD7F32]", glowColor: "rgba(205,127,50,0.6)" },
-  { icon: Award, label: "BADGES", value: "3", color: "text-cyan-400", glowColor: "rgba(34,211,238,0.6)" },
-];
+interface ProfileCardProps {
+  username?: string;
+  level?: number;
+  xpTotal?: number;
+  avatarId?: string | null;
+  experienceLevel?: string | null;
+}
 
-export default function ProfileCard() {
+const AVATAR_CLASSES: Record<string, string> = {
+  av1: 'bg-gradient-1',
+  av2: 'bg-gradient-2',
+  av3: 'bg-gradient-3',
+  av4: 'bg-gradient-to-br from-fuchsia-500 to-cyan-500',
+  av5: 'bg-gradient-to-br from-indigo-500 to-purple-600',
+};
+
+export default function ProfileCard({
+  username = 'priyanshu',
+  level = 1,
+  xpTotal = 1240,
+  avatarId = null,
+  experienceLevel = 'Beginner',
+}: ProfileCardProps) {
+  const xpNeeded = level * 1000;
+  const xpPct = Math.min((xpTotal / xpNeeded) * 100, 100);
+
+  const avatarCls = avatarId && AVATAR_CLASSES[avatarId]
+    ? AVATAR_CLASSES[avatarId]
+    : 'bg-gradient-to-br from-[#E873C3] to-[#8D37D6]';
+
+  const stats = [
+    { icon: Star, label: "TOTAL XP", value: xpTotal.toLocaleString(), color: "text-[#FFD700]", glowColor: "rgba(255,215,0,0.6)" },
+    { icon: Flame, label: "DAY STREAK", value: "7", color: "text-orange-500", glowColor: "rgba(249,115,22,0.6)" },
+    { icon: Shield, label: "RANK", value: experienceLevel === 'Advanced' ? 'Commander' : experienceLevel === 'Intermediate' ? 'Explorer' : 'Initiate', color: "text-[#CD7F32]", glowColor: "rgba(205,127,50,0.6)" },
+    { icon: Award, label: "BADGES", value: "3", color: "text-cyan-400", glowColor: "rgba(34,211,238,0.6)" },
+  ];
+
   return (
     <div className="cosmo-glass-panel p-6 border border-white/10">
       <div className="flex items-center gap-4">
         <div className="relative shrink-0">
-          <div className="w-16 h-16 rounded-full border-2 border-[#E873C3] overflow-hidden bg-gradient-to-br from-[#E873C3] to-[#8D37D6] flex items-center justify-center shadow-[0_0_20px_rgba(232,115,195,0.3)]">
+          <div className={`w-16 h-16 rounded-full border-2 border-[#E873C3] overflow-hidden ${avatarCls} flex items-center justify-center shadow-[0_0_20px_rgba(232,115,195,0.3)]`}>
             <Image
               src="/images/mascot.png"
               alt="User avatar"
@@ -29,11 +58,11 @@ export default function ProfileCard() {
 
         <div className="min-w-0 flex-1">
           <p className="font-bold text-white truncate text-xl">
-            priyanshu
+            {username}
           </p>
           <div className="mt-1">
             <span className="inline-flex items-center text-[#E873C3] font-bold text-xs px-3 py-1 rounded-full bg-[#E873C3]/10 border border-[#E873C3]/20">
-              Level 1
+              Level {level}
             </span>
           </div>
         </div>
@@ -44,15 +73,15 @@ export default function ProfileCard() {
           <div>
             <p className="text-[10px] uppercase tracking-wider text-white/50 font-semibold mb-1">Current Progress</p>
             <p className="text-sm font-medium text-white/80">
-              <span className="text-white font-bold">1,240</span> / 2,000 ✦
+              <span className="text-white font-bold">{xpTotal.toLocaleString()}</span> / {xpNeeded.toLocaleString()} ✦
             </p>
           </div>
-          <p className="text-sm font-medium text-white/60 mb-0.5">to Level 2</p>
+          <p className="text-sm font-medium text-white/60 mb-0.5">to Level {level + 1}</p>
         </div>
         <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
           <div
             className="h-full rounded-full bg-gradient-to-r from-[#FFD700] via-[#F59E0B] to-[#E873C3] shadow-[0_0_10px_rgba(255,215,0,0.5)]"
-            style={{ width: "62%" }}
+            style={{ width: `${xpPct}%` }}
           />
         </div>
       </div>
