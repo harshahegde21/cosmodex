@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff } from 'lucide-react';
 import { OnboardingData } from '../../types/onboarding';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface AuthStepProps {
   onNext: () => void;
@@ -11,7 +11,8 @@ interface AuthStepProps {
 
 export default function AuthStep({ onNext, updateData }: AuthStepProps) {
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(false);
+  const searchParams = useSearchParams();
+  const [isLogin, setIsLogin] = useState(searchParams.get('mode') === 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

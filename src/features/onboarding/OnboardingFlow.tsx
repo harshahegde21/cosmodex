@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { useSearchParams } from 'next/navigation';
 import { OnboardingData, OnboardingStepId } from './types/onboarding';
 
 import StartStep from './components/steps/StartStep';
@@ -26,7 +27,9 @@ const STEPS: OnboardingStepId[] = [
 ];
 
 export default function OnboardingFlow() {
-  const [stepIndex, setStepIndex] = useState(0);
+  const searchParams = useSearchParams();
+  const isLoginMode = searchParams.get('mode') === 'login';
+  const [stepIndex, setStepIndex] = useState(isLoginMode ? 1 : 0);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<OnboardingData>({
     email: '',
