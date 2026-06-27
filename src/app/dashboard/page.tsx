@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import Navbar from "@/components/navbar/Navbar";
 import DashboardBackground from "@/components/dashboard/DashboardBackground";
 import WelcomeBanner from "@/components/dashboard/WelcomeBanner";
 import GetStartedCard from "@/components/dashboard/GetStartedCard";
@@ -35,6 +36,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#080312] flex flex-col relative overflow-x-hidden">
+      <Navbar />
       <DashboardBackground />
 
       <main className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 py-8 pt-24 relative flex-1 z-10 flex flex-col gap-8">

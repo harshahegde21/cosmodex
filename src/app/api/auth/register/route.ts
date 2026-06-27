@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import prisma from '@/lib/prisma';
+import { cookies } from 'next/headers';
 
 const SESSION_COOKIE = 'cosmo_session';
 const SALT_ROUNDS = 12;
@@ -55,6 +56,8 @@ export async function POST(req: NextRequest) {
         auth_provider: 'email',
         role: 'student',
         avatar_url: avatarUrl,
+        experience_level: experienceLevel,
+        interests: interests ?? [],
         xp_total: 0,
         level: 1,
         is_active: true,
@@ -65,6 +68,8 @@ export async function POST(req: NextRequest) {
         username: true,
         email: true,
         avatar_url: true,
+        experience_level: true,
+        interests: true,
         level: true,
         xp_total: true,
         role: true,
@@ -78,15 +83,24 @@ export async function POST(req: NextRequest) {
       username: newUser.username,
       email: newUser.email,
       avatarId: avatarId ?? null,
-      experienceLevel: experienceLevel ?? null,
-      interests: interests ?? [],
+      experienceLevel: newUser.experience_level ?? null,
+      interests: newUser.interests ?? [],
       xpTotal: newUser.xp_total ?? 0,
       level: newUser.level ?? 1,
       role: newUser.role ?? 'student',
       createdAt: newUser.created_at?.toISOString() ?? new Date().toISOString(),
     });
 
-    const response = NextResponse.json({
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE, sessionPayload, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+
+    return NextResponse.json({
       success: true,
       user: {
         id: newUser.id,
@@ -100,16 +114,6 @@ export async function POST(req: NextRequest) {
         role: newUser.role,
       },
     });
-
-    response.cookies.set(SESSION_COOKIE, sessionPayload, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
-    });
-
-    return response;
   } catch (err) {
     console.error('[register] Error:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });

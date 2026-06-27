@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff } from 'lucide-react';
 import { OnboardingData } from '../../types/onboarding';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AuthStepProps {
   onNext: () => void;
@@ -9,6 +10,7 @@ interface AuthStepProps {
 }
 
 export default function AuthStep({ onNext, updateData }: AuthStepProps) {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +29,23 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
     setIsSubmitting(true);
 
     try {
+      if (isLogin) {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const resData = await res.json();
+        if (!res.ok || resData.error) {
+          setError(resData.error || 'Invalid credentials or account inactive.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        router.push('/dashboard');
+        return;
+      }
+
       const res = await fetch('/api/auth/check-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,21 +122,21 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
               className="cosmo-input text-sm"
               required
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          
+
           {error && (
             <div className="text-rose-500 text-xs font-mono text-center mt-2">
               {error}
             </div>
           )}
-          
+
           <button
             type="submit"
             disabled={!isFormValid || isSubmitting}
@@ -171,7 +190,7 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
               By signing up, I agree to Cosmodex&apos;s <a href="#" className="underline hover:text-white transition-colors">Terms</a>.
             </p>
           )}
-          
+
           <p className="text-cosmo-text-muted">
             {isLogin ? "Need an account? " : "Already have an account? "}
             <button
