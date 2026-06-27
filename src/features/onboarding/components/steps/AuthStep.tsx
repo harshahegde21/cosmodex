@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { OnboardingData } from '../../types/onboarding';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 interface AuthStepProps {
   onNext: () => void;
@@ -12,12 +13,26 @@ interface AuthStepProps {
 export default function AuthStep({ onNext, updateData }: AuthStepProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isLogin, setIsLogin] = useState(searchParams.get('mode') === 'login');
+  const [isLogin, setIsLogin] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('mode') === 'login';
+    }
+    return false;
+  });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('error') || '';
+    }
+    return '';
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,9 +88,25 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
     }
   };
 
-  const handleProvider = (method: 'Google' | 'GitHub') => {
-    updateData({ authMethod: method });
-    onNext();
+  const handleProvider = async (provider: 'Google' | 'GitHub') => {
+    setError('');
+    setIsSubmitting(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider.toLowerCase() as 'google' | 'github',
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback?mode=${isLogin ? 'login' : 'signup'}`,
+        },
+      });
+      if (error) {
+        setError(error.message);
+        setIsSubmitting(false);
+      }
+    } catch {
+      setError('An error occurred during authentication redirect.');
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = email && password && (isLogin || password.length >= 8);
@@ -116,8 +147,13 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value);
-                setError('');
+                const val = e.target.value;
+                setPassword(val);
+                if (!isLogin && val.length > 0 && val.length < 8) {
+                  setError('Password must be at least 8 characters.');
+                } else {
+                  setError('');
+                }
               }}
               placeholder="Password"
               className="cosmo-input text-sm"
