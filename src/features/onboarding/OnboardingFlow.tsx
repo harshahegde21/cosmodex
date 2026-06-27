@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import { OnboardingData, OnboardingStepId } from './types/onboarding';
+import { createClient } from '@/lib/supabase/client';
 
 import StartStep from './components/steps/StartStep';
 import AuthStep from './components/steps/AuthStep';
@@ -31,6 +32,7 @@ export default function OnboardingFlow() {
   const isLoginMode = searchParams.get('mode') === 'login';
   const [stepIndex, setStepIndex] = useState(isLoginMode ? 1 : 0);
   const [direction, setDirection] = useState(1);
+  const [loadingSession, setLoadingSession] = useState(true);
   const [data, setData] = useState<OnboardingData>({
     email: '',
     password: '',
@@ -40,7 +42,43 @@ export default function OnboardingFlow() {
     interests: [],
   });
 
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const sessionRes = await fetch('/api/auth/session');
+        const sessionData = await sessionRes.json();
+        
+        if (sessionData.user) {
+          window.location.href = '/dashboard';
+          return;
+        }
+
+        const supabase = createClient();
+        const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+
+        if (supabaseUser) {
+          const provider = (supabaseUser.app_metadata.provider as 'Google' | 'GitHub') || 'Google';
+          setData(prev => ({
+            ...prev,
+            email: supabaseUser.email || '',
+            authMethod: provider,
+          }));
+          setStepIndex(2);
+        }
+      } catch (err) {
+        console.error('Session check failed:', err);
+      } finally {
+        setLoadingSession(false);
+      }
+    }
+    checkSession();
+  }, []);
+
   const currentStep = STEPS[stepIndex];
+
+  if (loadingSession) {
+    return null;
+  }
 
   const goNext = () => {
     if (stepIndex < STEPS.length - 1) {
