@@ -290,7 +290,7 @@ export default function HeroSection() {
               willChange: "transform",
             }}
           >
-            <a href="#signup" className="btn-primary" id="hero-cta-btn">
+            <a href="/onboarding" className="btn-primary" id="hero-cta-btn">
               <span
                 style={{
                   position: "relative",

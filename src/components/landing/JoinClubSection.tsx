@@ -36,7 +36,7 @@ const plans: PricingPlan[] = [
     ],
     description: "Perfect for exploring the cosmos at your own pace.",
     buttonText: "Start for Free",
-    href: "#signup",
+    href: "/onboarding",
     isPopular: false,
     accentColor: "#c084fc",
     accentRgb: "192,132,252",
@@ -57,7 +57,7 @@ const plans: PricingPlan[] = [
     ],
     description: "For serious learners ready to level up fast.",
     buttonText: "Go Pro",
-    href: "#signup",
+    href: "/onboarding",
     isPopular: true,
     accentColor: "#ff2d78",
     accentRgb: "255,45,120",
@@ -78,7 +78,7 @@ const plans: PricingPlan[] = [
     ],
     description: "The full cosmic experience for the elite few.",
     buttonText: "Join Elite",
-    href: "#signup",
+    href: "/onboarding",
     isPopular: false,
     accentColor: "#ff6ba8",
     accentRgb: "255,107,168",
@@ -152,10 +152,10 @@ function PricingCard({
       animate={
         isInView
           ? {
-              opacity: 1,
-              y: isCenter ? -16 : 0,
-              scale: isSide ? 0.95 : 1,
-            }
+            opacity: 1,
+            y: isCenter ? -16 : 0,
+            scale: isSide ? 0.95 : 1,
+          }
           : {}
       }
       transition={{
