@@ -13,12 +13,43 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      updateData({ authMethod: 'Email' });
+    if (!email || !password) return;
+    if (!isLogin && password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch('/api/auth/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const resData = await res.json();
+      if (resData.exists) {
+        setError('This email is already registered.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (resData.error) {
+        setError(resData.error);
+        setIsSubmitting(false);
+        return;
+      }
+
+      updateData({ authMethod: 'Email', email, password });
       onNext();
+    } catch {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -26,6 +57,8 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
     updateData({ authMethod: method });
     onNext();
   };
+
+  const isFormValid = email && password && (isLogin || password.length >= 8);
 
   return (
     <div className="cosmo-glass p-8 sm:p-10 w-full max-w-sm mx-auto shadow-2xl relative overflow-hidden">
@@ -49,7 +82,10 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError('');
+              }}
               placeholder="Email"
               className="cosmo-input text-sm"
               required
@@ -59,7 +95,10 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
             <input
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError('');
+              }}
               placeholder="Password"
               className="cosmo-input text-sm"
               required
@@ -73,12 +112,18 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
             </button>
           </div>
           
+          {error && (
+            <div className="text-rose-500 text-xs font-mono text-center mt-2">
+              {error}
+            </div>
+          )}
+          
           <button
             type="submit"
-            disabled={!email || !password}
+            disabled={!isFormValid || isSubmitting}
             className="cosmo-btn-primary w-full py-4 text-base mt-4"
           >
-            {isLogin ? 'Log in' : 'Sign up for free'}
+            {isSubmitting ? 'Checking...' : (isLogin ? 'Log in' : 'Sign up for free')}
           </button>
         </form>
 

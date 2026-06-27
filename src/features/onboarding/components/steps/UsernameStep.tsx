@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
 import { OnboardingData } from '../../types/onboarding';
@@ -13,8 +13,32 @@ interface UsernameStepProps {
 export default function UsernameStep({ data, onNext, onBack, updateData }: UsernameStepProps) {
   const [username, setUsername] = useState(data.username);
   const [isTyping, setIsTyping] = useState(false);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
 
-  const isValid = username.length >= 3 && /^[a-zA-Z0-9_]+$/.test(username);
+  const formatValid = username.length >= 3 && /^[a-zA-Z0-9_]+$/.test(username);
+
+  useEffect(() => {
+    if (!formatValid) {
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
+        const json = await res.json();
+        setIsAvailable(json.available);
+      } catch {
+        setIsAvailable(false);
+      } finally {
+        setIsChecking(false);
+      }
+    }, 450);
+
+    return () => clearTimeout(delayDebounce);
+  }, [username, formatValid]);
+
+  const isValid = formatValid && isAvailable === true;
   
   const handleNext = () => {
     if (isValid) {
@@ -40,15 +64,19 @@ export default function UsernameStep({ data, onNext, onBack, updateData }: Usern
             type="text"
             value={username}
             onChange={(e) => {
-              setUsername(e.target.value);
+              const val = e.target.value;
+              setUsername(val);
               setIsTyping(true);
+              setIsAvailable(null);
+              const fmtValid = val.length >= 3 && /^[a-zA-Z0-9_]+$/.test(val);
+              setIsChecking(fmtValid);
             }}
             onBlur={() => setIsTyping(false)}
             placeholder="e.g. starweaver_99"
             className="cosmo-input font-mono text-center text-xl tracking-wider py-5"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
-            {!isTyping && username.length > 0 && (
+            {!isTyping && !isChecking && username.length > 0 && (
               isValid ? (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-[#E873C3]">
                   <CheckCircle size={20} />
@@ -63,12 +91,12 @@ export default function UsernameStep({ data, onNext, onBack, updateData }: Usern
         </div>
         
         <div className="flex justify-center h-4">
-          {!isTyping && (
+          {!isTyping && !isChecking && (
              <motion.span 
                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                className={`text-xs ${isValid ? 'text-[#D95FD1]' : username.length > 0 ? 'text-rose-400' : 'text-transparent'}`}
              >
-               {isValid ? 'Callsign available.' : username.length > 0 ? 'Invalid format or too short.' : ''}
+               {isValid ? 'Callsign available.' : username.length > 0 ? (isAvailable === false ? 'Callsign taken.' : 'Invalid format or too short.') : ''}
              </motion.span>
           )}
         </div>

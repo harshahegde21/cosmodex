@@ -1,5 +1,7 @@
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Rocket } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { OnboardingData } from '../../types/onboarding';
 
 interface CompletionStepProps {
@@ -7,6 +9,60 @@ interface CompletionStepProps {
 }
 
 export default function CompletionStep({ data }: CompletionStepProps) {
+  const router = useRouter();
+  const [error, setError] = useState('');
+  const hasCalledRegister = useRef(false);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (hasCalledRegister.current) return;
+    hasCalledRegister.current = true;
+
+    async function registerUser() {
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+            username: data.username,
+            avatarId: data.avatarId,
+            experienceLevel: data.experienceLevel,
+            interests: data.interests,
+          }),
+        });
+
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          if (isMounted.current) {
+            setError(json.error || 'Failed to create user. Please try again.');
+          }
+          return;
+        }
+
+        setTimeout(() => {
+          if (isMounted.current) {
+            router.push('/dashboard');
+          }
+        }, 3000);
+      } catch {
+        if (isMounted.current) {
+          setError('Network error. Please try again.');
+        }
+      }
+    }
+
+    registerUser();
+  }, [data, router]);
+
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-8 mt-24">
       <motion.div
@@ -24,7 +80,11 @@ export default function CompletionStep({ data }: CompletionStepProps) {
            Welcome Aboard,<br/> <span className="text-gradient-1">{data.username}</span>
         </h2>
         <p className="text-cosmo-text-muted text-lg relative z-10">
-          Your command center is ready. Syncing data with the network...
+           {error ? (
+             <span className="text-rose-400 font-mono text-base">{error}</span>
+           ) : (
+             'Your command center is ready. Syncing data with the network...'
+           )}
         </p>
       </motion.div>
 

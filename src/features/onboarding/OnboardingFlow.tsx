@@ -29,6 +29,8 @@ export default function OnboardingFlow() {
   const [stepIndex, setStepIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<OnboardingData>({
+    email: '',
+    password: '',
     username: '',
     avatarId: null,
     experienceLevel: null,
