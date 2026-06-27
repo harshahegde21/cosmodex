@@ -77,7 +77,7 @@ export default function Navbar() {
               {item.isMegaMenu && activeDropdown === item.label && (
                 <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#050508] py-5 px-6 animate-fade-in flex flex-col gap-5 rounded-xl border border-[#E873C3]/20 shadow-[0_10px_40px_rgba(0,0,0,0.8),_0_0_20px_rgba(232,115,195,0.15)]">
                   <h4 className="text-[11px] font-bold text-[#E873C3] uppercase tracking-widest">Recommended</h4>
-                  
+
                   <Link href="#" className="flex gap-4 items-start group">
                     <div className="w-12 h-12 rounded-lg bg-[#2e1065]/50 shrink-0 border border-[#8b5cf6]/30 overflow-hidden flex items-center justify-center">
                       <BookOpen size={24} className="text-[#8b5cf6]" />
@@ -129,7 +129,7 @@ export default function Navbar() {
           </button>
 
           {/* Join Crew CTA */}
-          <Link href="#" id="navbar-join-crew" className="dashboard-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
+          <Link href="/onboarding" id="navbar-join-crew" className="dashboard-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm h-9">
             Join Crew
           </Link>
 
