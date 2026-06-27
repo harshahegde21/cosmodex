@@ -1,4 +1,3 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Define your role hierarchy and protected paths
@@ -9,49 +8,39 @@ const ROLE_ROUTES = {
   '/dashboard': ['student', 'super_admin', 'learning_admin', 'arena_admin'],
 }
 
+const SESSION_COOKIE = 'cosmo_session';
+
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  // getUser() is critical: it validates the token with the Supabase Auth server.
-  // Do NOT use getSession() for authorization, as it only checks the local, potentially spoofed cookie.
-  const { data: { user } } = await supabase.auth.getUser()
   const path = request.nextUrl.pathname
+
+  // Retrieve custom session cookie
+  const sessionCookie = request.cookies.get(SESSION_COOKIE)
+  let user = null
+  if (sessionCookie?.value) {
+    try {
+      user = JSON.parse(sessionCookie.value)
+    } catch {
+      // Ignored: invalid JSON
+    }
+  }
 
   // 1. Unauthenticated users hitting protected routes
   const isProtectedRoute = Object.keys(ROLE_ROUTES).some(route => path.startsWith(route))
   if (!user && isProtectedRoute) {
-    const redirectUrl = new URL('/login', request.url)
-    redirectUrl.searchParams.set('next', path) // Store intent for post-login redirection
+    const redirectUrl = new URL('/onboarding', request.url)
+    redirectUrl.searchParams.set('mode', 'login') // Go straight to login form
+    redirectUrl.searchParams.set('next', path)    // Store intent for post-login redirection
     return NextResponse.redirect(redirectUrl)
   }
 
-  // 2. Authenticated users hitting auth routes (login/signup)
-  if (user && (path.startsWith('/login') || path.startsWith('/signup'))) {
+  // 2. Authenticated users hitting auth/onboarding routes
+  if (user && (path.startsWith('/login') || path.startsWith('/signup') || (path.startsWith('/onboarding') && request.nextUrl.searchParams.get('mode') === 'login'))) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   // 3. RBAC Enforcement
   if (user && isProtectedRoute) {
-    const userRole = user.app_metadata?.role || 'student'
+    const userRole = user.role || 'student'
     
     // Find the matching route rule
     const matchingRoute = Object.keys(ROLE_ROUTES).find(route => path.startsWith(route))
@@ -60,13 +49,12 @@ export async function middleware(request: NextRequest) {
       const allowedRoles = ROLE_ROUTES[matchingRoute as keyof typeof ROLE_ROUTES]
       
       if (!allowedRoles.includes(userRole)) {
-        // Log this attempt in your observability tool (Datadog/Sentry) as it implies unauthorized exploration
         return NextResponse.redirect(new URL('/unauthorized', request.url))
       }
     }
   }
 
-  return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {
