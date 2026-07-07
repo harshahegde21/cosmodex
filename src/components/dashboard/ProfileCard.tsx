@@ -10,6 +10,8 @@ interface ProfileCardProps {
   xpTotal?: number;
   avatarId?: string | null;
   experienceLevel?: string | null;
+  streak?: number;
+  badgeCount?: number;
 }
 
 const AVATAR_CLASSES: Record<string, string> = {
@@ -20,12 +22,20 @@ const AVATAR_CLASSES: Record<string, string> = {
   av5: 'bg-gradient-to-br from-indigo-500 to-purple-600',
 };
 
+function getRankLabel(experienceLevel: string | null | undefined): string {
+  if (experienceLevel === 'Advanced') return 'Commander';
+  if (experienceLevel === 'Intermediate') return 'Explorer';
+  return 'Initiate';
+}
+
 export default function ProfileCard({
-  username = 'priyanshu',
+  username = 'Explorer',
   level = 1,
-  xpTotal = 1240,
+  xpTotal = 0,
   avatarId = null,
   experienceLevel = 'Beginner',
+  streak = 0,
+  badgeCount = 0,
 }: ProfileCardProps) {
   const xpNeeded = level * 1000;
   const xpPct = Math.min((xpTotal / xpNeeded) * 100, 100);
@@ -35,10 +45,34 @@ export default function ProfileCard({
     : 'bg-gradient-to-br from-[#E873C3] to-[#8D37D6]';
 
   const stats = [
-    { icon: Star, label: "TOTAL XP", value: xpTotal.toLocaleString(), color: "text-[#FFD700]", glowColor: "rgba(255,215,0,0.6)" },
-    { icon: Flame, label: "DAY STREAK", value: "7", color: "text-orange-500", glowColor: "rgba(249,115,22,0.6)" },
-    { icon: Shield, label: "RANK", value: experienceLevel === 'Advanced' ? 'Commander' : experienceLevel === 'Intermediate' ? 'Explorer' : 'Initiate', color: "text-[#CD7F32]", glowColor: "rgba(205,127,50,0.6)" },
-    { icon: Award, label: "BADGES", value: "3", color: "text-cyan-400", glowColor: "rgba(34,211,238,0.6)" },
+    {
+      icon: Star,
+      label: "TOTAL XP",
+      value: xpTotal.toLocaleString(),
+      color: "text-[#FFD700]",
+      glowColor: "rgba(255,215,0,0.6)",
+    },
+    {
+      icon: Flame,
+      label: "DAY STREAK",
+      value: streak.toString(),
+      color: "text-orange-500",
+      glowColor: "rgba(249,115,22,0.6)",
+    },
+    {
+      icon: Shield,
+      label: "RANK",
+      value: getRankLabel(experienceLevel),
+      color: "text-[#CD7F32]",
+      glowColor: "rgba(205,127,50,0.6)",
+    },
+    {
+      icon: Award,
+      label: "BADGES",
+      value: badgeCount.toString(),
+      color: "text-cyan-400",
+      glowColor: "rgba(34,211,238,0.6)",
+    },
   ];
 
   return (
@@ -80,7 +114,7 @@ export default function ProfileCard({
         </div>
         <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#FFD700] via-[#F59E0B] to-[#E873C3] shadow-[0_0_10px_rgba(255,215,0,0.5)]"
+            className="h-full rounded-full bg-gradient-to-r from-[#FFD700] via-[#F59E0B] to-[#E873C3] shadow-[0_0_10px_rgba(255,215,0,0.5)] transition-all duration-1000"
             style={{ width: `${xpPct}%` }}
           />
         </div>
