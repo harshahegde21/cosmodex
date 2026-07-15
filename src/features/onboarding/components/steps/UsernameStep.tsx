@@ -23,23 +23,35 @@ export default function UsernameStep({ data, onNext, onBack, updateData }: Usern
       return;
     }
 
+    const controller = new AbortController();
+
     const delayDebounce = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
+        const res = await fetch(
+          `/api/auth/check-username?username=${encodeURIComponent(username)}`,
+          { signal: controller.signal }
+        );
         const json = await res.json();
         setIsAvailable(json.available);
-      } catch {
-        setIsAvailable(false);
+      } catch (err) {
+        if (err instanceof Error && err.name !== 'AbortError') {
+          setIsAvailable(false);
+        }
       } finally {
-        setIsChecking(false);
+        if (!controller.signal.aborted) {
+          setIsChecking(false);
+        }
       }
     }, 450);
 
-    return () => clearTimeout(delayDebounce);
+    return () => {
+      clearTimeout(delayDebounce);
+      controller.abort();
+    };
   }, [username, formatValid]);
 
   const isValid = formatValid && isAvailable === true;
-  
+
   const handleNext = () => {
     if (isValid) {
       updateData({ username });
@@ -89,15 +101,15 @@ export default function UsernameStep({ data, onNext, onBack, updateData }: Usern
             )}
           </div>
         </div>
-        
+
         <div className="flex justify-center h-4">
           {!isTyping && !isChecking && (
-             <motion.span 
-               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-               className={`text-xs ${isValid ? 'text-[#D95FD1]' : username.length > 0 ? 'text-rose-400' : 'text-transparent'}`}
-             >
-               {isValid ? 'Callsign available.' : username.length > 0 ? (isAvailable === false ? 'Callsign taken.' : 'Invalid format or too short.') : ''}
-             </motion.span>
+            <motion.span
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className={`text-xs ${isValid ? 'text-[#D95FD1]' : username.length > 0 ? 'text-rose-400' : 'text-transparent'}`}
+            >
+              {isValid ? 'Callsign available.' : username.length > 0 ? (isAvailable === false ? 'Callsign taken.' : 'Invalid format or too short.') : ''}
+            </motion.span>
           )}
         </div>
 
