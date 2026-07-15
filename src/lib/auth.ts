@@ -1,15 +1,15 @@
-import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
-import GitHub from 'next-auth/providers/github';
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import GitHubProvider from 'next-auth/providers/github';
 import prisma from './prisma';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     }),
-    GitHub({
+    GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID!,
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
       async profile(profile, tokens) {
@@ -24,7 +24,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             });
             if (emailRes.ok) {
               const emails = await emailRes.json();
-              const primaryEmail = emails.find((e: { primary: boolean; verified: boolean; email: string }) => e.primary && e.verified) ?? emails.find((e: { primary: boolean; email: string }) => e.primary) ?? emails[0];
+              const primaryEmail =
+                emails.find((e: { primary: boolean; verified: boolean; email: string }) => e.primary && e.verified) ??
+                emails.find((e: { primary: boolean; email: string }) => e.primary) ??
+                emails[0];
               if (primaryEmail) {
                 email = primaryEmail.email;
               }
@@ -59,7 +62,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const provider = account.provider.toLowerCase();
           const existingProvider = existingUser.auth_provider?.toLowerCase();
           if (existingProvider && existingProvider !== provider) {
-            const prettyProvider = existingProvider === 'email' ? 'email/password' : (existingProvider === 'github' ? 'GitHub' : 'Google');
+            const prettyProvider =
+              existingProvider === 'email'
+                ? 'email/password'
+                : existingProvider === 'github'
+                  ? 'GitHub'
+                  : 'Google';
             return `/onboarding?error=This email is already registered using ${prettyProvider}. Please sign in using that method.`;
           }
         }
@@ -68,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token, account }) {
       if (account) {
-        token.provider = account.provider; // Store Google or GitHub provider name
+        token.provider = account.provider;
       }
       return token;
     },
@@ -83,4 +91,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
   },
-});
+};
+
+export default NextAuth(authOptions);
