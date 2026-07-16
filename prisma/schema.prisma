@@ -1,15 +1,14 @@
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+
 model admin_activity_log {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   actor_id       String?   @db.Uuid
@@ -25,7 +24,6 @@ model admin_activity_log {
   users          users?    @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model arena_questions {
   id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_by        String?             @db.Uuid
@@ -43,7 +41,6 @@ model arena_questions {
   arena_submissions arena_submissions[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model arena_sessions {
   id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id             String              @db.Uuid
@@ -60,7 +57,6 @@ model arena_sessions {
   arena_submissions   arena_submissions[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model arena_stats {
   id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id            String    @unique @db.Uuid
@@ -73,7 +69,6 @@ model arena_stats {
   users              users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model arena_submissions {
   id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id           String          @db.Uuid
@@ -92,7 +87,6 @@ model arena_submissions {
   users             users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model badges {
   id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String        @unique
@@ -104,7 +98,6 @@ model badges {
   user_badges   user_badges[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model enrollments {
   id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id           String    @db.Uuid
@@ -117,7 +110,6 @@ model enrollments {
   users             users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model languages {
   id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   code           String           @unique
@@ -130,7 +122,6 @@ model languages {
   modules        modules[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model module_completions {
   id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id         String    @db.Uuid
@@ -142,7 +133,6 @@ model module_completions {
   users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model modules {
   id                   String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   language_id          String               @db.Uuid
@@ -166,7 +156,6 @@ model modules {
   topics               topics[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model progress {
   id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id         String    @db.Uuid
@@ -182,7 +171,6 @@ model progress {
   users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model questions {
   id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   module_id       String        @db.Uuid
@@ -202,7 +190,6 @@ model questions {
   submissions     submissions[]
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model roles {
   id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                  String                  @unique
@@ -216,7 +203,6 @@ model schema_migrations {
   version String @id @unique(map: "schema_migrations_version_idx") @db.VarChar(14)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model skip_test_attempts {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id      String    @db.Uuid
@@ -229,7 +215,6 @@ model skip_test_attempts {
   users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model submissions {
   id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id           String    @db.Uuid
@@ -248,7 +233,6 @@ model submissions {
   users             users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model topics {
   id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   module_id      String   @db.Uuid
@@ -263,7 +247,6 @@ model topics {
   modules        modules  @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model user_badges {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id   String    @db.Uuid
@@ -273,7 +256,6 @@ model user_badges {
   users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model user_role_assignments {
   id                                             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id                                        String    @db.Uuid
@@ -286,7 +268,6 @@ model user_role_assignments {
   users_user_role_assignments_user_idTousers     users     @relation("user_role_assignments_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model users {
   id                                                             String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username                                                       String
@@ -318,4 +299,6 @@ model users {
   user_badges                                                    user_badges[]
   user_role_assignments_user_role_assignments_assigned_byTousers user_role_assignments[] @relation("user_role_assignments_assigned_byTousers")
   user_role_assignments_user_role_assignments_user_idTousers     user_role_assignments[] @relation("user_role_assignments_user_idTousers")
+
+  @@index([username])
 }

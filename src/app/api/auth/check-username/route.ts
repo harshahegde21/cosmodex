@@ -24,7 +24,10 @@ export async function GET(req: NextRequest) {
       select: { id: true },
     });
 
-    return NextResponse.json({ available: !existing });
+    return NextResponse.json(
+      { available: !existing },
+      { headers: { 'Cache-Control': 'private, max-age=5, stale-while-revalidate=10' } }
+    );
   } catch (err) {
     console.error('[check-username] Error:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });

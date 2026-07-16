@@ -1,197 +1,119 @@
-# 🐳 Local Infrastructure Setup Guide
+# 🐳 Local Development Setup Guide
 
-Welcome to **Cosmodex**! This guide will get your local development infrastructure running in minutes. We use a fully containerized **Supabase + Redis** stack so every developer has the exact same environment.
+Welcome to **Cosmodex**! This guide gets your local environment running in minutes.
 
-**No manual database installation required.** Everything runs inside Docker.
+> [!NOTE]
+> The production database runs on **Neon PostgreSQL** (serverless). For local development you can either connect to the shared dev Neon branch, or spin up a local PostgreSQL instance via Docker.
 
 ---
 
 ## 📋 Prerequisites
 
-You only need **one** tool installed before you begin:
-
-- **Mac/Windows:** [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- **Linux:** [Docker Engine](https://docs.docker.com/engine/install/) + [Docker Compose Plugin](https://docs.docker.com/compose/install/)
-
-> [!IMPORTANT]
-> Make sure Docker Desktop is **open and running** in the background before running any commands below.
+- **Node.js** v20+ and **pnpm** installed
+- **Docker Desktop** (only if running a local PostgreSQL container)
 
 ---
 
-## ⚡ Quick Start (3 steps)
+## ⚡ Quick Start
 
-**Mac / Linux:**
 ```bash
-# 1. Copy the example environment file
+# 1. Install dependencies
+pnpm install
+
+# 2. Copy the env file and fill in your values
 cp .env.example .env
 
-# 2. Start all services in the background
-docker compose up -d
+# 3. Apply database migrations
+pnpm prisma migrate dev
 
-# 3. Wait ~30 seconds, then verify everything is running
-docker compose ps
+# 4. Start the dev server
+pnpm dev
 ```
 
-**Windows (PowerShell):**
-```powershell
-# 1. Copy the example environment file
-Copy-Item .env.example .env
-
-# 2. Start all services in the background
-docker compose up -d
-
-# 3. Wait ~30 seconds, then verify everything is running
-docker compose ps
-```
-
-That's it. All services will be running automatically.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
 ## 🔐 Environment Configuration
 
-The entire stack is configured via a single `.env` file in the project root.
+Copy `.env.example` to `.env` and fill in the required values:
 
-`.env.example` is committed to the repository and contains **pre-filled safe local defaults** — you do not need to change anything to get started locally.
-
-### Key variables explained:
-
-| Variable | Description | Default |
-|---|---|---|
-| `POSTGRES_PASSWORD` | Database password | `YourStrongLocalPassword2024` |
-| `JWT_SECRET` | Secret used to sign all JWT tokens | `super-secret-jwt-token...` |
-| `ANON_KEY` | Public API key for browser clients | Pre-filled local JWT |
-| `SERVICE_ROLE_KEY` | Private key for server-side code only | Pre-filled local JWT |
-| `DASHBOARD_USERNAME` | Kong dashboard login username | `supabase` |
-| `DASHBOARD_PASSWORD` | Kong dashboard login password | `supabase` |
-| `REDIS_URL` | Redis connection string | `redis://localhost:6379` |
-| `NEXT_PUBLIC_SUPABASE_URL` | API URL for use in your app | `http://localhost:8000` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key for use in your app | Same as `ANON_KEY` |
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string (Neon or local Docker) |
+| `NEXTAUTH_URL` | Your app URL — `http://localhost:3000` for local dev |
+| `NEXTAUTH_SECRET` | At least 32 random chars — generate with `openssl rand -base64 32` |
+| `AUTH_SECRET` | Same as `NEXTAUTH_SECRET` (used by NextAuth v5 beta) |
+| `AUTH_GITHUB_ID` | GitHub OAuth App client ID |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App client secret |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
 
 > [!WARNING]
 > Never commit your real `.env` file. It is already excluded by `.gitignore`. Only `.env.example` should be committed.
 
 ---
 
-## 🚀 Managing the Stack
+## 🐳 Running PostgreSQL Locally via Docker (Optional)
 
-### Start services
+If you prefer a fully local database instead of connecting to Neon:
+
 ```bash
+# Start a local PostgreSQL container
 docker compose up -d
-```
 
-### Stop services (data is preserved)
-```bash
-docker compose down
-```
-
-### View running containers
-```bash
+# Verify it's running
 docker compose ps
 ```
 
-### View logs for a specific service
-```bash
-docker logs supabase-auth --tail 50
-docker logs supabase-db --tail 50
+Then set your `DATABASE_URL` in `.env` to:
+```env
+DATABASE_URL="postgresql://postgres:YourStrongLocalPassword2024@localhost:5432/postgres"
 ```
 
-### Full reset (wipes ALL data and starts fresh)
-```bash
-docker compose down -v
-docker compose up -d
-```
+### Docker Commands
+
+| Command | Purpose |
+|---|---|
+| `docker compose up -d` | Start PostgreSQL in the background |
+| `docker compose down` | Stop (data is preserved) |
+| `docker compose down -v` | ⚠️ Full reset — wipes all data |
+| `docker compose ps` | View running containers |
+| `docker logs cosmodex-db --tail 50` | View database logs |
 
 > [!CAUTION]
 > `docker compose down -v` permanently deletes your local database. Only use this when you want a completely clean slate.
 
 ---
 
-## 🌐 Service Access Endpoints
+## 🗄️ Database
 
-Once containers are running, the following are available:
+**ORM:** Prisma with PostgreSQL
 
-### 📊 Supabase Studio Dashboard
-Visual interface to manage tables, run SQL queries, inspect auth users, and browse storage.
-
-| Access Method | URL | Credentials |
-|---|---|---|
-| **Via API Gateway** (recommended) | [http://localhost:8000](http://localhost:8000) | `supabase` / `supabase` |
-| **Direct** (no login required) | [http://localhost:3000](http://localhost:3000) | — |
-
-> The API Gateway link (`localhost:8000`) shows a browser login prompt — enter `supabase` / `supabase`.
-
-### 🔌 API Gateway (Kong)
-All application API calls go through Kong on port `8000`. Use these values in your code:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=http://localhost:8000
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<value from your .env>
-```
-
-### 🗄️ PostgreSQL Database
-Direct database access (e.g. for GUI tools like TablePlus or DBeaver):
-
-| Setting | Value |
-|---|---|
-| Host | `localhost` |
-| Port | `5432` |
-| Database | `postgres` |
-| Username | `supabase_admin` |
-| Password | Value of `POSTGRES_PASSWORD` in your `.env` |
-
-### ⚡ Redis Cache
-```env
-REDIS_URL=redis://localhost:6379
-```
-
-**Test it from your terminal:**
 ```bash
-docker exec local-redis redis-cli ping
-# Expected output: PONG
+# Apply pending migrations
+pnpm prisma migrate dev
+
+# Open Prisma Studio (visual DB browser)
+pnpm prisma studio
+
+# Regenerate Prisma client after schema changes
+pnpm prisma generate
 ```
-
----
-
-## 🧱 Services Overview
-
-| Container | Image | Port | Purpose |
-|---|---|---|---|
-| `supabase-db` | `supabase/postgres` | `5432` | PostgreSQL database |
-| `supabase-auth` | `supabase/gotrue` | `9999` (internal) | Authentication (sign up, login, JWT) |
-| `supabase-rest` | `postgrest/postgrest` | `3000` (internal) | Auto-generated REST API from DB schema |
-| `supabase-realtime` | `supabase/realtime` | `4000` (internal) | WebSocket subscriptions |
-| `supabase-storage` | `supabase/storage-api` | `5000` (internal) | File storage API |
-| `supabase-meta` | `supabase/postgres-meta` | `8080` (internal) | DB introspection |
-| `supabase-kong` | `kong/kong` | `8000`, `8443` | API Gateway — single entry point |
-| `supabase-studio` | `supabase/studio` | `3000` | Dashboard UI |
-| `local-redis` | `redis:7-alpine` | `6379` | Cache / session store |
 
 ---
 
 ## 🔧 Troubleshooting
 
-### A container keeps restarting
-Check its logs to find the error:
-```bash
-docker logs <container-name> --tail 30
-```
+### Database connection fails
+- Check that `DATABASE_URL` in `.env` is correct
+- If using Docker, make sure the container is running: `docker compose ps`
 
-### I need a completely fresh database
-```bash
-docker compose down -v   # wipes all volumes
-docker compose up -d     # re-initializes from scratch
-```
+### OAuth login not working
+- Ensure your GitHub / Google OAuth app callback URLs include `http://localhost:3000/api/auth/callback/github` (or `/google`)
+- Verify `NEXTAUTH_URL=http://localhost:3000` in your `.env`
 
-### Port conflict (something already uses port 8000 or 5432)
-Edit the port mappings in `.env`:
-```env
-KONG_HTTP_PORT=8100    # change from 8000
-POSTGRES_PORT=5433     # change from 5432
-```
-
-### Check all container statuses at once
+### Prisma client out of sync
 ```bash
-docker compose ps
+pnpm prisma generate
 ```
-All containers should show `Up` or `Up (healthy)`.

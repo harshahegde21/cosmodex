@@ -22,7 +22,10 @@ export async function POST(req: NextRequest) {
       select: { id: true },
     });
 
-    return NextResponse.json({ exists: !!existing });
+    return NextResponse.json(
+      { exists: !!existing },
+      { headers: { 'Cache-Control': 'private, max-age=5, stale-while-revalidate=10' } }
+    );
   } catch (err) {
     console.error('[check-email] Error:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });

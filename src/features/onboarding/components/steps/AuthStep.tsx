@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { OnboardingData } from '../../types/onboarding';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { signIn } from 'next-auth/react';
 
 interface AuthStepProps {
   onNext: () => void;
@@ -91,22 +91,7 @@ export default function AuthStep({ onNext, updateData }: AuthStepProps) {
   const handleProvider = async (provider: 'Google' | 'GitHub') => {
     setError('');
     setIsSubmitting(true);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider.toLowerCase() as 'google' | 'github',
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback?mode=${isLogin ? 'login' : 'signup'}`,
-        },
-      });
-      if (error) {
-        setError(error.message);
-        setIsSubmitting(false);
-      }
-    } catch {
-      setError('An error occurred during authentication redirect.');
-      setIsSubmitting(false);
-    }
+    signIn(provider.toLowerCase(), { callbackUrl: '/onboarding?step=USERNAME' });
   };
 
   const isFormValid = email && password && (isLogin || password.length >= 8);
