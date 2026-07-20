@@ -72,6 +72,17 @@ export default function MatchmakingPanel({ socket, userId, username, onMatchFoun
       setError('Connection to server lost. Reconnecting...');
     };
 
+    const handleConnect = () => {
+      setError(null);
+    };
+
+    const handleConnectError = (err: Error) => {
+      console.error('[Socket Connect Error]', err);
+      setError(`Failed to connect to battle server: ${err.message || 'Check connection'}`);
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('connect_error', handleConnectError);
     socket.on('queue_joined', handleJoined);
     socket.on('match_found', handleMatchFound);
     socket.on('queue_left', handleLeft);
@@ -79,6 +90,8 @@ export default function MatchmakingPanel({ socket, userId, username, onMatchFoun
     socket.on('disconnect', handleDisconnect);
 
     return () => {
+      socket.off('connect', handleConnect);
+      socket.off('connect_error', handleConnectError);
       socket.off('queue_joined', handleJoined);
       socket.off('match_found', handleMatchFound);
       socket.off('queue_left', handleLeft);

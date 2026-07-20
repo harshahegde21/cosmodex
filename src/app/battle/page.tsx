@@ -43,7 +43,10 @@ export default function BattlePage() {
           // Initialize Socket.io connection using JWT token
           activeSocket = io(ARENA_URL, {
             auth: { token: data.token },
-            transports: ['websocket'],
+            transports: ['polling', 'websocket'],
+            reconnection: true,
+            reconnectionAttempts: 10,
+            reconnectionDelay: 1000,
           });
           setSocket(activeSocket);
         }
