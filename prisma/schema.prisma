@@ -300,5 +300,118 @@ model users {
   user_role_assignments_user_role_assignments_assigned_byTousers user_role_assignments[] @relation("user_role_assignments_assigned_byTousers")
   user_role_assignments_user_role_assignments_user_idTousers     user_role_assignments[] @relation("user_role_assignments_user_idTousers")
 
+  // Battle Arena relations
+  battle_user_stats         battle_user_stats?
+  battle_matches_p1         battle_matches[]     @relation("BattlePlayer1Relation")
+  battle_matches_p2         battle_matches[]     @relation("BattlePlayer2Relation")
+  battle_matches_winner     battle_matches[]     @relation("BattleWinnerRelation")
+  battle_submissions        battle_submissions[]
+  battle_mcq_matches_p1     battle_mcq_matches[] @relation("BattleMcqPlayer1Relation")
+  battle_mcq_matches_p2     battle_mcq_matches[] @relation("BattleMcqPlayer2Relation")
+  battle_mcq_matches_winner battle_mcq_matches[] @relation("BattleMcqWinnerRelation")
+
   @@index([username])
 }
+
+
+model battle_user_stats {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String   @unique @db.Uuid
+  elo_rating     Int      @default(1000)
+  mcq_elo_rating Int      @default(1000)
+  wins           Int      @default(0)
+  losses         Int      @default(0)
+  draws          Int      @default(0)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model battle_problems {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String
+  difficulty      String
+  base_points     Int
+  time_limit_sec  Int      @default(2)
+  memory_limit_mb Int      @default(128)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  test_cases         battle_test_cases[]
+  battle_submissions battle_submissions[]
+}
+
+model battle_test_cases {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  problem_id String          @db.Uuid
+  input      String
+  expected   String
+  is_public  Boolean         @default(false)
+
+  problem battle_problems @relation(fields: [problem_id], references: [id], onDelete: Cascade)
+}
+
+model battle_matches {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  player1_id    String    @db.Uuid
+  player2_id    String    @db.Uuid
+  winner_id     String?   @db.Uuid
+  started_at    DateTime  @default(now()) @db.Timestamptz(6)
+  ended_at      DateTime? @db.Timestamptz(6)
+  status        String
+  player1_score Int       @default(0)
+  player2_score Int       @default(0)
+
+  player1            users          @relation("BattlePlayer1Relation", fields: [player1_id], references: [id])
+  player2            users          @relation("BattlePlayer2Relation", fields: [player2_id], references: [id])
+  winner             users?         @relation("BattleWinnerRelation", fields: [winner_id], references: [id])
+  battle_submissions battle_submissions[]
+
+  @@index([player1_id])
+  @@index([player2_id])
+  @@index([winner_id])
+}
+
+model battle_submissions {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String    @db.Uuid
+  problem_id   String    @db.Uuid
+  match_id     String?   @db.Uuid
+  code         String
+  language     String
+  status       String
+  passed_count Int       @default(0)
+  total_count  Int       @default(0)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+
+  user    users           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  problem battle_problems @relation(fields: [problem_id], references: [id], onDelete: Cascade)
+  match   battle_matches? @relation(fields: [match_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@index([problem_id])
+  @@index([match_id])
+}
+
+model battle_mcq_matches {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  player1_id    String    @db.Uuid
+  player2_id    String    @db.Uuid
+  winner_id     String?   @db.Uuid
+  started_at    DateTime  @default(now()) @db.Timestamptz(6)
+  ended_at      DateTime? @db.Timestamptz(6)
+  status        String
+  player1_score Int       @default(0)
+  player2_score Int       @default(0)
+  total_rounds  Int       @default(5)
+
+  player1 users  @relation("BattleMcqPlayer1Relation", fields: [player1_id], references: [id])
+  player2 users  @relation("BattleMcqPlayer2Relation", fields: [player2_id], references: [id])
+  winner  users? @relation("BattleMcqWinnerRelation", fields: [winner_id], references: [id])
+
+  @@index([player1_id])
+  @@index([player2_id])
+  @@index([winner_id])
+}
+

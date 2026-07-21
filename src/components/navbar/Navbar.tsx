@@ -25,8 +25,8 @@ const navItems = [
     icon: Code2,
     href: "#",
   },
-  { label: "Battle", icon: Hammer, href: "#" },
-  { label: "Leaderboard", icon: Users, href: "#" },
+  { label: "Battle", icon: Hammer, href: "/battle" },
+  { label: "Leaderboard", icon: Users, href: "/leaderboard" },
 ];
 
 interface UserSession {
@@ -99,17 +99,33 @@ export default function Navbar() {
               onMouseEnter={() => setActiveDropdown(item.label)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="nav-link group flex items-center gap-1.5">
-                <item.icon size={15} className="opacity-70 group-hover:opacity-100" />
-                {item.label}
-                {item.isMegaMenu && (
-                  <ChevronDown
-                    size={13}
-                    className={`ml-0.5 transition-transform duration-150 ${activeDropdown === item.label ? "rotate-180" : ""
+              {item.href && item.href !== "#" ? (
+                <Link href={item.href} className="nav-link group flex items-center gap-1.5">
+                  <item.icon size={15} className="opacity-70 group-hover:opacity-100" />
+                  {item.label}
+                  {item.isMegaMenu && (
+                    <ChevronDown
+                      size={13}
+                      className={`ml-0.5 transition-transform duration-150 ${
+                        activeDropdown === item.label ? "rotate-180" : ""
                       }`}
-                  />
-                )}
-              </button>
+                    />
+                  )}
+                </Link>
+              ) : (
+                <button className="nav-link group flex items-center gap-1.5">
+                  <item.icon size={15} className="opacity-70 group-hover:opacity-100" />
+                  {item.label}
+                  {item.isMegaMenu && (
+                    <ChevronDown
+                      size={13}
+                      className={`ml-0.5 transition-transform duration-150 ${
+                        activeDropdown === item.label ? "rotate-180" : ""
+                      }`}
+                    />
+                  )}
+                </button>
+              )}
 
               {item.isMegaMenu && activeDropdown === item.label && (
                 <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#050508] py-5 px-6 animate-fade-in flex flex-col gap-5 rounded-xl border border-[#E873C3]/20 shadow-[0_10px_40px_rgba(0,0,0,0.8),_0_0_20px_rgba(232,115,195,0.15)]">

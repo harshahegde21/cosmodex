@@ -46,11 +46,9 @@ function formatJoinDate(iso: string | null): string {
 }
 
 export default function ProfileContent({
-  userId,
   username: initialUsername,
   createdAt,
   interests: initialInterests,
-  xpTotal,
   level,
   experienceLevel,
   streak,
