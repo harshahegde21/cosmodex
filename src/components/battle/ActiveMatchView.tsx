@@ -213,6 +213,7 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
       socket.off('opponent_completed_stage');
       socket.off('match_ended');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, isMcq, matchInfo.roomId, userId]);
 
   // Auto-save code draft in Code Battle

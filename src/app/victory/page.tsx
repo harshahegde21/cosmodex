@@ -241,7 +241,7 @@ export default function VictoryPage() {
             const subs: { userId: string }[] = await subsRes.json();
             subCount = subs.filter((s) => s.userId === myId).length;
           }
-        } catch (_) { /* ignore */ }
+        } catch { /* ignore */ }
 
         const roomState = JSON.parse(localStorage.getItem("cosmodex_last_room_state") || "null");
         const ps = roomState?.players?.[myId];
