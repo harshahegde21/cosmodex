@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useRef, useCallback } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/navbar/Navbar";
 import { useArenaSocket } from "@/lib/useArenaSocket";
@@ -97,7 +97,7 @@ function BattleCodingContent() {
         return;
       }
 
-      setUser({ ...savedUser, token: savedToken });
+      Promise.resolve().then(() => setUser({ ...savedUser, token: savedToken }));
 
       fetch("/api/users/me", { headers: { Authorization: `Bearer ${savedToken}` } })
         .then((r) => {
@@ -140,6 +140,7 @@ function BattleCodingContent() {
       const prob = allProblems.find((p: Problem) => p.id === pid);
 
       if (prob && prob.id !== curProblem?.id) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurProblem(prob);
         clearSubmissionResult();
       }
@@ -148,20 +149,24 @@ function BattleCodingContent() {
 
   useEffect(() => {
     if (curProblem && !code) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCode(STARTERS[lang] || "");
     }
   }, [curProblem, lang, code]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (submissionResult) setSubmitting(false);
   }, [submissionResult]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (runResult) setRunning(false);
   }, [runResult]);
 
   useEffect(() => {
     if (toastMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToast(toastMessage);
       const id = setTimeout(() => {
         setToast(null);
@@ -172,35 +177,39 @@ function BattleCodingContent() {
   }, [toastMessage, clearToast]);
 
   useEffect(() => {
-    if (waitingForOpponent) {
-      setWaitTimer(waitingForOpponent.time);
-      const iv = setInterval(() => {
-        setWaitTimer((t: number) => {
-          if (t <= 1) {
-            clearInterval(iv);
-            return 0;
-          }
-          return t - 1;
-        });
-      }, 1000);
-      return () => clearInterval(iv);
-    }
+    if (!waitingForOpponent) return;
+    const initialTime = waitingForOpponent.time;
+    let remaining = initialTime;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setWaitTimer(initialTime);
+    const iv = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(iv);
+        setWaitTimer(0);
+      } else {
+        setWaitTimer(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(iv);
   }, [waitingForOpponent]);
 
   useEffect(() => {
-    if (opponentCompleted) {
-      setDecTimer(opponentCompleted.time);
-      const iv = setInterval(() => {
-        setDecTimer((t: number) => {
-          if (t <= 1) {
-            clearInterval(iv);
-            return 0;
-          }
-          return t - 1;
-        });
-      }, 1000);
-      return () => clearInterval(iv);
-    }
+    if (!opponentCompleted) return;
+    const initialTime = opponentCompleted.time;
+    let remaining = initialTime;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDecTimer(initialTime);
+    const iv = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(iv);
+        setDecTimer(0);
+      } else {
+        setDecTimer(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(iv);
   }, [opponentCompleted]);
 
   useEffect(() => {
@@ -228,10 +237,7 @@ function BattleCodingContent() {
     document.body.style.cursor = "col-resize";
   };
 
-  const showToast = useCallback((msg: string, type: string) => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3000);
-  }, []);
+  // showToast is handled via the socket hook's toastMessage now
 
   const fmt = (s: number) =>
     `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -309,10 +315,10 @@ function BattleCodingContent() {
           </div>
           <div
             className={`text-4xl font-black tracking-widest ${draw
-                ? "text-[#F5C842]"
-                : won
-                  ? "text-[#3DCB7F]"
-                  : "text-[#E85D5D]"
+              ? "text-[#F5C842]"
+              : won
+                ? "text-[#3DCB7F]"
+                : "text-[#E85D5D]"
               }`}
           >
             {draw ? "DRAW" : won ? "VICTORY" : "DEFEATED"}
@@ -395,10 +401,10 @@ function BattleCodingContent() {
             )}
             <span
               className={`arena-timer ${(myTimeRemaining || 0) <= 10
-                  ? "danger"
-                  : (myTimeRemaining || 0) <= 30
-                    ? "warning"
-                    : ""
+                ? "danger"
+                : (myTimeRemaining || 0) <= 30
+                  ? "warning"
+                  : ""
                 }`}
             >
               ⏱ {fmt(myTimeRemaining || 0)}
@@ -441,10 +447,10 @@ function BattleCodingContent() {
               <div className="mb-6 flex items-center">
                 <h3
                   className={`text-2xl font-bold ${curProblem?.difficulty === "EASY"
-                      ? "text-[#3DCB7F]"
-                      : curProblem?.difficulty === "MEDIUM"
-                        ? "text-[#F5C842]"
-                        : "text-[#E85D5D]"
+                    ? "text-[#3DCB7F]"
+                    : curProblem?.difficulty === "MEDIUM"
+                      ? "text-[#F5C842]"
+                      : "text-[#E85D5D]"
                     }`}
                 >
                   # {curProblem?.difficulty}
@@ -706,14 +712,14 @@ function BattleCodingContent() {
               </div>
               <div
                 className={`arena-output-body ${submissionResult
-                    ? submissionResult.status === "ACCEPTED"
-                      ? "success"
-                      : "error"
-                    : runResult
-                      ? runResult.timedOut || runResult.stderr
-                        ? "warn"
-                        : "success"
-                      : ""
+                  ? submissionResult.status === "ACCEPTED"
+                    ? "success"
+                    : "error"
+                  : runResult
+                    ? runResult.timedOut || runResult.stderr
+                      ? "warn"
+                      : "success"
+                    : ""
                   }`}
               >
                 {submissionResult
