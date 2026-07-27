@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from '@/components/navbar/Navbar';
 import BattleArenaHero from '@/components/battle/BattleArenaHero';
 import MatchmakingPanel from '@/components/battle/MatchmakingPanel';
@@ -27,6 +27,12 @@ export default function BattlePage() {
   const [loading, setLoading] = useState(true);
   const [matchInfo, setMatchInfo] = useState<MatchInfo | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const matchInfoRef = useRef<MatchInfo | null>(null);
+
+  // Keep ref in sync so socket callbacks always see latest value
+  useEffect(() => {
+    matchInfoRef.current = matchInfo;
+  }, [matchInfo]);
 
   useEffect(() => {
     let activeSocket: Socket | null = null;
@@ -40,7 +46,6 @@ export default function BattlePage() {
         if (data.token && data.userId) {
           setUser({ userId: data.userId, username: data.username });
 
-          // Initialize Socket.io connection using JWT token
           activeSocket = io(ARENA_URL, {
             auth: { token: data.token },
             transports: ['polling', 'websocket'],
@@ -48,6 +53,16 @@ export default function BattlePage() {
             reconnectionAttempts: 10,
             reconnectionDelay: 1000,
           });
+
+          // Page-level match_found listener — guaranteed fallback so the match
+          // always transitions even if the MatchmakingPanel timer fires late.
+          activeSocket.on('match_found', (payload: MatchInfo) => {
+            if (!matchInfoRef.current) {
+              console.log('[BattlePage] match_found → entering arena', payload);
+              setMatchInfo(payload);
+            }
+          });
+
           setSocket(activeSocket);
         }
       })
@@ -59,6 +74,22 @@ export default function BattlePage() {
     };
   }, []);
 
+  // ── ACTIVE MATCH: full-screen takeover (no navbar / hero) ──────────────────
+  if (matchInfo && user) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#050508', color: '#fff', padding: '20px' }}>
+        <ActiveMatchView
+          socket={socket}
+          matchInfo={matchInfo}
+          userId={user.userId}
+          username={user.username}
+          onLeave={() => setMatchInfo(null)}
+        />
+      </div>
+    );
+  }
+
+  // ── LOBBY / MATCHMAKING ───────────────────────────────────────────────────
   return (
     <main style={{ minHeight: '100vh', background: '#050508', color: '#fff', paddingTop: '80px', paddingBottom: '40px' }}>
       <Navbar />
@@ -104,14 +135,6 @@ export default function BattlePage() {
               Sign In
             </a>
           </div>
-        ) : matchInfo ? (
-          <ActiveMatchView
-            socket={socket}
-            matchInfo={matchInfo}
-            userId={user.userId}
-            username={user.username}
-            onLeave={() => setMatchInfo(null)}
-          />
         ) : (
           <MatchmakingPanel
             socket={socket}

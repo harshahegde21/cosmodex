@@ -1,13 +1,18 @@
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
+import "../globals.css";
 
 export const metadata: Metadata = {
-  title: 'Battle Arena | Cosmodex',
-  description: 'Real-time competitive coding & MCQ battles. Join the queue, match against opponents, and prove your skills.',
+  title: "Cosmodex Matchmaking",
+  description: "Real-time 1v1 Coding Battles",
 };
 
-export default function BattleArenaLayout({ children }: { children: React.ReactNode }) {
+export default function BattleLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div style={{ minHeight: '100vh', background: '#050508' }}>
+    <div className="battle-layout">
       {children}
     </div>
   );

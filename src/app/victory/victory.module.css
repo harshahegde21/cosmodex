@@ -1,0 +1,281 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 70% 55% at 20% 60%, rgba(88,28,220,0.28) 0%, transparent 65%),
+              radial-gradient(ellipse 50% 40% at 80% 30%, rgba(168,85,247,0.18) 0%, transparent 60%),
+              #0a0514;
+  overflow: hidden;
+  font-family: "Inter", sans-serif;
+}
+
+.starCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px 36px;
+  max-width: 680px;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.cardVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Status banner ── */
+.statusBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(22, 220, 120, 0.09);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #86efac;
+  backdrop-filter: blur(6px);
+  letter-spacing: 0.02em;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusDivider {
+  color: rgba(134, 239, 172, 0.35);
+  font-size: 14px;
+}
+
+/* ── Trophy ── */
+.trophyWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.trophySvg {
+  width: 148px;
+  height: 148px;
+  animation: trophyFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(245,166,35,0.55)) drop-shadow(0 0 60px rgba(168,85,247,0.35));
+}
+
+.trophyGlow {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 16px;
+  background: radial-gradient(ellipse, rgba(168,85,247,0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: trophyFloat 3s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+
+@keyframes trophyFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ── VICTORY title ── */
+.victoryTitle {
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(36px, 7vw, 62px);
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #c026d3 0%, #a855f7 40%, #e879f9 70%, #c026d3 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleShimmer 4s linear infinite;
+  margin: 0;
+  line-height: 1.1;
+}
+
+@keyframes titleShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ── Subtitle ── */
+.subtitle {
+  font-size: 14px;
+  color: #b8b0d0;
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.opponentName { color: #f97316; font-weight: 700; }
+.eloText      { color: #a855f7; font-weight: 700; }
+
+/* ── Stats ── */
+.statsRow {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 4px;
+}
+
+.statCard {
+  flex: 1;
+  min-width: 120px;
+  max-width: 150px;
+  background: rgba(30, 18, 58, 0.65);
+  border: 1px solid rgba(88, 60, 140, 0.6);
+  border-radius: 14px;
+  padding: 20px 16px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.statCard:hover {
+  border-color: rgba(168, 85, 247, 0.7);
+  transform: translateY(-2px);
+}
+
+.statValue {
+  font-size: 36px;
+  font-weight: 800;
+  color: #f0ecff;
+  font-family: "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #7c6fa0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+.statIcon {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+/* ── Play Again ── */
+.playAgainBtn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 44px;
+  background: linear-gradient(135deg, #c026d3 0%, #a855f7 50%, #8b5cf6 100%);
+  background-size: 200% 200%;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 24px rgba(168,85,247,0.45), 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: btnPulse 3s ease-in-out infinite;
+}
+
+.playAgainBtn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 36px rgba(168,85,247,0.6), 0 4px 12px rgba(0,0,0,0.35);
+}
+
+.playAgainBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(168,85,247,0.45), 0 2px 8px rgba(0,0,0,0.3); }
+  50%       { box-shadow: 0 4px 32px rgba(168,85,247,0.7),  0 2px 8px rgba(0,0,0,0.3); }
+}
+
+/* ── Loading ── */
+.loadingScreen {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0514;
+}
+
+.loadingDots {
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+  position: relative;
+}
+
+.loadingDots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a855f7;
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.loadingDots span:nth-child(2) { animation-delay: 0.2s; }
+.loadingDots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.4); opacity: 0.35; }
+  40%            { transform: scale(1);   opacity: 1;    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .card         { padding: 0 16px 28px; gap: 14px; }
+  .victoryTitle { font-size: 28px; }
+  .trophySvg    { width: 110px; height: 110px; }
+  .statsRow     { gap: 10px; }
+  .statCard     { min-width: 95px; padding: 16px 10px 12px; }
+  .statValue    { font-size: 28px; }
+  .playAgainBtn { padding: 12px 32px; font-size: 14px; }
+  .statusBanner { font-size: 10px; padding: 6px 12px; }
+}

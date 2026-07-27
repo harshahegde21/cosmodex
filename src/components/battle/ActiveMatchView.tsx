@@ -122,6 +122,27 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
 
       socket.on('mcq_match_ended', (data: { winnerId: string | null; reason: string }) => {
         setMatchResult(data);
+
+        setMcqState((latest) => {
+          try {
+            const myPlayer = latest?.players?.[userId];
+            localStorage.setItem('cosmodex_match_result', JSON.stringify({
+              points:       myPlayer?.score ?? 0,
+              livesLeft:    0,
+              submissions:  0,
+              opponentName: matchInfo.opponentUsername,
+              myName:       username,
+              eloDelta:     null,
+              matchId:      matchInfo.roomId,
+              isWinner:     data.winnerId === userId,
+            }));
+          } catch { /* ignore */ }
+          return latest;
+        });
+
+        if (data.winnerId === userId) {
+          setTimeout(() => { window.location.href = '/victory'; }, 1200);
+        }
       });
     } else {
       socket.emit('join_room', { roomId: matchInfo.roomId, userId });
@@ -154,6 +175,31 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
 
       socket.on('match_ended', (data: { winnerId: string | null; reason: string }) => {
         setMatchResult(data);
+
+        // Persist result for the victory page to read
+        setCodeState((latest) => {
+          const myPlayer = latest?.players?.[userId];
+          try {
+            localStorage.setItem('cosmodex_match_result', JSON.stringify({
+              points:       myPlayer?.points ?? 0,
+              livesLeft:    myPlayer?.lives ?? 0,
+              submissions:  0,
+              opponentName: matchInfo.opponentUsername,
+              myName:       username,
+              eloDelta:     null,
+              matchId:      latest?.roomId ?? null,
+              isWinner:     data.winnerId === userId,
+            }));
+            localStorage.setItem('cosmodex_last_room_state', JSON.stringify(latest));
+            if (latest?.roomId) localStorage.setItem('cosmodex_last_match_id', latest.roomId);
+          } catch { /* ignore */ }
+          return latest;
+        });
+
+        // Redirect winner to victory page after a short delay
+        if (data.winnerId === userId) {
+          setTimeout(() => { window.location.href = '/victory'; }, 1200);
+        }
       });
     }
 

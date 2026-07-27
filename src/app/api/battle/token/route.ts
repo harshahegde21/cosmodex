@@ -1,44 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 const SESSION_COOKIE = 'cosmo_session';
-const JWT_SECRET = process.env.JWT_SECRET || 'cosmodex-dev-secret-change-in-prod';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
-/**
- * GET /api/battle/token
- *
- * Reads the cosmo_session cookie and issues a short-lived JWT
- * that the battle-arena-backend can verify. This bridges the
- * cookie-based session of cosmodex-main with the JWT-based auth
- * of the battle-arena WebSocket server.
- */
 export async function GET(req: NextRequest) {
+  let userId: string | null = null;
+  let username: string | null = null;
+  let role: string = 'student';
+
   const sessionCookie = req.cookies.get(SESSION_COOKIE);
-  if (!sessionCookie?.value) {
+  if (sessionCookie?.value) {
+    try {
+      const parsed = JSON.parse(sessionCookie.value);
+      if (parsed.userId && parsed.username) {
+        userId = parsed.userId;
+        username = parsed.username;
+        role = parsed.role ?? 'student';
+      }
+    } catch {
+      // Fall through to NextAuth check below
+    }
+  }
+
+  if (!userId || !username) {
+    const session = await getServerSession(authOptions);
+    if (session?.user?.email) {
+      const dbUser = await prisma.users.findUnique({
+        where: { email: session.user.email.trim().toLowerCase() },
+        select: { id: true, username: true, role: true },
+      });
+      if (dbUser) {
+        userId = dbUser.id;
+        username = dbUser.username;
+        role = dbUser.role ?? 'student';
+      }
+    }
+  }
+
+  if (!userId || !username) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let session: { userId: string; username: string; role?: string };
-  try {
-    session = JSON.parse(sessionCookie.value);
-  } catch {
-    return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
-  }
-
-  if (!session.userId || !session.username) {
-    return NextResponse.json({ error: 'Incomplete session data' }, { status: 401 });
-  }
-
-  // Issue a JWT valid for 2 hours (enough for a full match session)
   const token = jwt.sign(
-    {
-      userId: session.userId,
-      username: session.username,
-      role: session.role ?? 'student',
-    },
+    { userId, username, role },
     JWT_SECRET,
     { expiresIn: '2h' }
   );
 
-  return NextResponse.json({ token, userId: session.userId, username: session.username });
+  return NextResponse.json({ token, userId, username });
 }
