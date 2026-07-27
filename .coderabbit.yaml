@@ -1,0 +1,12 @@
+reviews:
+  request_changes_workflow: true
+
+instructions: |
+  Review all code for general best practices, security, and logical errors. 
+  CRITICAL RULE: Always verify that any UI components or views being modified, created, or imported are actually utilized and mounted. If a component is left unmounted or unused, flag it.
+
+file_path_instructions:
+  - path: "**/*.{js,jsx,ts,tsx,vue,svelte,html}"
+    instructions: |
+      THIS IS THE CORE FRONTEND. You must enforce UI mounting rules at all costs.
+      Strictly verify that every single component is properly mounted to the DOM/UI tree. If a developer builds or modifies a component but forgets to mount or render it, you MUST explicitly flag it as an error and request changes to block the PR.
