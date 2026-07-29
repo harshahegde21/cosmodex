@@ -2,11 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
+import Editor, { Monaco } from '@monaco-editor/react';
 
 const STARTERS: Record<string, string> = {
   python: "# Write your solution here\n",
-  javascript:
-    'const lines = require("fs").readFileSync("/dev/stdin","utf8").trim().split("\\n");\n\n// Write your solution here\n',
   java: 'import java.util.Scanner;\npublic class Main {\n  public static void main(String[] args) {\n    Scanner sc = new Scanner(System.in);\n    // Write your solution here\n  }\n}',
   cpp: "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n  // Write your solution here\n  return 0;\n}",
 };
@@ -268,14 +267,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
           try {
             const myPlayer = latest?.players?.[userId];
             localStorage.setItem('cosmodex_match_result', JSON.stringify({
-              points:       myPlayer?.score ?? 0,
-              livesLeft:    0,
-              submissions:  0,
+              points: myPlayer?.score ?? 0,
+              livesLeft: 0,
+              submissions: 0,
               opponentName: matchInfo.opponentUsername,
-              myName:       username,
-              eloDelta:     null,
-              matchId:      matchInfo.roomId,
-              isWinner:     data.winnerId === userId,
+              myName: username,
+              eloDelta: null,
+              matchId: matchInfo.roomId,
+              isWinner: data.winnerId === userId,
             }));
           } catch { /* ignore */ }
           return latest;
@@ -334,14 +333,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
           const myPlayer = latest?.players?.[userId];
           try {
             localStorage.setItem('cosmodex_match_result', JSON.stringify({
-              points:       myPlayer?.points ?? 0,
-              livesLeft:    myPlayer?.lives ?? 0,
-              submissions:  myPlayer?.submissionsCount ?? 0,
+              points: myPlayer?.points ?? 0,
+              livesLeft: myPlayer?.lives ?? 0,
+              submissions: myPlayer?.submissionsCount ?? 0,
               opponentName: matchInfo.opponentUsername,
-              myName:       username,
-              eloDelta:     null,
-              matchId:      latest?.roomId ?? null,
-              isWinner:     data.winnerId === userId,
+              myName: username,
+              eloDelta: null,
+              matchId: latest?.roomId ?? null,
+              isWinner: data.winnerId === userId,
             }));
             localStorage.setItem('cosmodex_last_room_state', JSON.stringify(latest));
             if (latest?.roomId) localStorage.setItem('cosmodex_last_match_id', latest.roomId);
@@ -407,15 +406,13 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
     return () => clearTimeout(timer);
   }, [code, isMcq, socket, matchInfo.roomId, userId]);
 
-  // Problem management: Try backend fetch; fallback asynchronously (FIX: no synchronous setState in effect body)
+  // Problem management: Fetch problem details if valid ID provided, dependent ONLY on problemId
+  const myPlayer = codeState?.players?.[userId];
+  const currentStage = myPlayer?.currentStage ?? codeState?.currentStage ?? 1;
+  const problemId = codeState?.problems?.[currentStage - 1];
+
   useEffect(() => {
-    if (isMcq) return;
-
-    const myPlayer = codeState?.players?.[userId];
-    const currentStage = myPlayer?.currentStage ?? codeState?.currentStage ?? 1;
-    const problemId = codeState?.problems?.[currentStage - 1];
-
-    if (!problemId) return;
+    if (isMcq || !problemId || problemId.startsWith('mock-')) return;
 
     let ignore = false;
 
@@ -432,15 +429,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
           setRunResult(null);
         }
       })
-      .catch((err) => {
-        if (ignore) return;
-        console.log('[ActiveMatchView] Backend problem unavailable:', err.message);
+      .catch(() => {
+        // Silently fallback to local problem details if API fails
       });
 
     return () => {
       ignore = true;
     };
-  }, [codeState, userId, isMcq]);
+  }, [problemId, isMcq]);
 
   const handleForfeit = () => {
     if (socket && matchInfo.roomId) {
@@ -538,13 +534,12 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
             {draw ? "🤝" : won ? "🏆" : "💀"}
           </div>
           <div
-            className={`text-4xl font-black tracking-widest ${
-              draw
+            className={`text-4xl font-black tracking-widest ${draw
                 ? "text-[#F5C842]"
                 : won
-                ? "text-[#3DCB7F]"
-                : "text-[#E85D5D]"
-            }`}
+                  ? "text-[#3DCB7F]"
+                  : "text-[#E85D5D]"
+              }`}
           >
             {draw ? "DRAW" : won ? "VICTORY" : "DEFEATED"}
           </div>
@@ -552,8 +547,8 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
             {draw
               ? "Both fighters competed hard. The battle ends in a draw."
               : won
-              ? "You defeated your opponent! Your ELO has been updated."
-              : `${matchInfo.opponentUsername} won this battle. Keep practicing!`}
+                ? "You defeated your opponent! Your ELO has been updated."
+                : `${matchInfo.opponentUsername} won this battle. Keep practicing!`}
           </div>
           <div className="flex gap-4 flex-wrap justify-center mt-2">
             <div className="cosmo-glass-panel p-5 px-7 min-w-[120px] shadow-lg text-center">
@@ -619,9 +614,9 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                 className={`arena-timer ${(myTimeRemaining || 0) <= 10
                   ? "danger"
                   : (myTimeRemaining || 0) <= 30
-                  ? "warning"
-                  : ""
-                }`}
+                    ? "warning"
+                    : ""
+                  }`}
               >
                 ⏱ {fmt(myTimeRemaining || 0)}
               </span>
@@ -714,13 +709,12 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
 
                 <div className="mb-6 flex items-center">
                   <h3
-                    className={`text-xl font-bold ${
-                      activeProblem.difficulty === "EASY"
+                    className={`text-xl font-bold ${activeProblem.difficulty === "EASY"
                         ? "text-[#3DCB7F]"
                         : activeProblem.difficulty === "MEDIUM"
-                        ? "text-[#F5C842]"
-                        : "text-[#E85D5D]"
-                    }`}
+                          ? "text-[#F5C842]"
+                          : "text-[#E85D5D]"
+                      }`}
                   >
                     # {activeProblem.difficulty}
                   </h3>
@@ -798,14 +792,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                         {myPlayerCode?.status === "CODING"
                           ? "CODING"
                           : myPlayerCode?.status === "DONE"
-                          ? "DONE"
-                          : myPlayerCode?.status === "STAYING"
-                          ? "STAYING"
-                          : myPlayerCode?.status === "WAITING_DECISION"
-                          ? "DECIDING"
-                          : myPlayerCode?.status === "ELIMINATED"
-                          ? "ELIMINATED"
-                          : myPlayerCode?.status || "CODING"}
+                            ? "DONE"
+                            : myPlayerCode?.status === "STAYING"
+                              ? "STAYING"
+                              : myPlayerCode?.status === "WAITING_DECISION"
+                                ? "DECIDING"
+                                : myPlayerCode?.status === "ELIMINATED"
+                                  ? "ELIMINATED"
+                                  : myPlayerCode?.status || "CODING"}
                       </span>
                     </div>
                   </div>
@@ -836,14 +830,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                         {oppPlayerCode?.status === "CODING"
                           ? "CODING"
                           : oppPlayerCode?.status === "DONE"
-                          ? "DONE"
-                          : oppPlayerCode?.status === "STAYING"
-                          ? "STAYING"
-                          : oppPlayerCode?.status === "WAITING_DECISION"
-                          ? "DECIDING"
-                          : oppPlayerCode?.status === "ELIMINATED"
-                          ? "ELIMINATED"
-                          : oppPlayerCode?.status || "CODING"}
+                            ? "DONE"
+                            : oppPlayerCode?.status === "STAYING"
+                              ? "STAYING"
+                              : oppPlayerCode?.status === "WAITING_DECISION"
+                                ? "DECIDING"
+                                : oppPlayerCode?.status === "ELIMINATED"
+                                  ? "ELIMINATED"
+                                  : oppPlayerCode?.status || "CODING"}
                       </span>
                     </div>
                   </div>
@@ -875,7 +869,6 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                     onChange={handleLangChange}
                   >
                     <option value="python">Python 3</option>
-                    <option value="javascript">JavaScript</option>
                     <option value="java">Java</option>
                     <option value="cpp">C++</option>
                   </select>
@@ -883,14 +876,44 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                 <span className="arena-char-count">{code.length} chars</span>
               </div>
 
-              {/* Code Textarea */}
-              <textarea
-                className="arena-code-editor flex-1 w-full"
-                placeholder="# Write your solution here..."
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                spellCheck={false}
-              />
+              {/* Monaco Code Editor */}
+              <div className="flex-1 w-full min-h-[200px] overflow-hidden py-2 bg-black">
+                <Editor
+                  height="100%"
+                  language={language}
+                  theme="pure-black"
+                  beforeMount={(monaco: Monaco) => {
+                    monaco.editor.defineTheme('pure-black', {
+                      base: 'vs-dark',
+                      inherit: true,
+                      rules: [],
+                      colors: {
+                        'editor.background': '#000000',
+                        'editorGutter.background': '#000000',
+                        'editor.lineHighlightBackground': '#0a0a0a',
+                      },
+                    });
+                  }}
+                  onMount={(_editor: unknown, monaco: Monaco) => {
+                    monaco.editor.setTheme('pure-black');
+                  }}
+                  value={code}
+                  onChange={(val: string | undefined) => setCode(val || '')}
+                  options={{
+                    minimap: { enabled: false }, // Hides the minimap to match the UI in image_8c7941.png
+                    fontSize: 14,
+                    wordWrap: "on",
+                    scrollBeyondLastLine: false,
+                    // THE TYPING FIXES:
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    autoIndent: 'full',
+                    formatOnType: true,
+                    tabSize: 4,
+                    insertSpaces: true,
+                  }}
+                />
+              </div>
 
               {/* Actions Bar */}
               <div className="arena-actions-bar">
@@ -964,22 +987,20 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                   <span className="arena-output-label">Terminal</span>
                   {runResult && !execResult && (
                     <span
-                      className={`arena-output-status ${
-                        runResult.timedOut || runResult.stderr ? "error" : "success"
-                      }`}
+                      className={`arena-output-status ${runResult.timedOut || runResult.stderr ? "error" : "success"
+                        }`}
                     >
                       {runResult.timedOut
                         ? "⏱ TLE"
                         : runResult.stderr
-                        ? "❌ Error"
-                        : "✓ Success"}
+                          ? "❌ Error"
+                          : "✓ Success"}
                     </span>
                   )}
                   {execResult && (
                     <span
-                      className={`arena-output-status ${
-                        execResult.status === "ACCEPTED" ? "success" : "error"
-                      }`}
+                      className={`arena-output-status ${execResult.status === "ACCEPTED" ? "success" : "error"
+                        }`}
                     >
                       {execResult.status === "ACCEPTED"
                         ? `✅ ACCEPTED ${execResult.passedCount}/${execResult.totalCount}`
@@ -988,44 +1009,43 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                   )}
                 </div>
                 <div
-                  className={`arena-output-body ${
-                    execResult
+                  className={`arena-output-body ${execResult
                       ? execResult.status === "ACCEPTED"
                         ? "success"
                         : "error"
                       : runResult
-                      ? runResult.timedOut || runResult.stderr
-                        ? "warn"
-                        : "success"
-                      : ""
-                  }`}
+                        ? runResult.timedOut || runResult.stderr
+                          ? "warn"
+                          : "success"
+                        : ""
+                    }`}
                 >
                   {execResult
                     ? execResult.status === "ACCEPTED"
                       ? `All ${execResult.passedCount} test cases passed! +${execResult.pointsAwarded ?? 0} points\n` +
-                        (execResult.testCases
-                          ?.filter((tc) => tc.isPublic)
-                          .map(
-                            (tc, i) =>
-                              `\nTest ${i + 1} ✓  Input: ${tc.input}   Expected: ${tc.expected}`
-                          )
-                          .join("") || "")
+                      (execResult.testCases
+                        ?.filter((tc) => tc.isPublic)
+                        .map(
+                          (tc, i) =>
+                            `\nTest ${i + 1} ✓  Input: ${tc.input}   Expected: ${tc.expected}`
+                        )
+                        .join("") || "")
                       : `${(execResult.status || "FAILED").replace(/_/g, " ")}  —  ${execResult.livesRemaining ?? myPlayerCode?.lives ?? 0} lives remaining\n` +
-                        (execResult.error ? `Error: ${execResult.error}\n` : "") +
-                        (execResult.testCases
-                          ?.filter((tc) => tc.isPublic)
-                          .map(
-                            (tc, i) =>
-                              `\nTest ${i + 1} ${tc.passed ? "✓" : "✗"}  Input: ${tc.input}   Expected: ${tc.expected}   Got: ${tc.actual || "(none)"}`
-                          )
-                          .join("") || "")
+                      (execResult.error ? `Error: ${execResult.error}\n` : "") +
+                      (execResult.testCases
+                        ?.filter((tc) => tc.isPublic)
+                        .map(
+                          (tc, i) =>
+                            `\nTest ${i + 1} ${tc.passed ? "✓" : "✗"}  Input: ${tc.input}   Expected: ${tc.expected}   Got: ${tc.actual || "(none)"}`
+                        )
+                        .join("") || "")
                     : runResult
-                    ? runResult.timedOut
-                      ? "Your code took too long to execute (Time limit: 5s)."
-                      : runResult.stderr ||
+                      ? runResult.timedOut
+                        ? "Your code took too long to execute (Time limit: 5s)."
+                        : runResult.stderr ||
                         runResult.stdout ||
                         "(No output produced)"
-                    : "Click Run or Submit to view your execution results"}
+                      : "Click Run or Submit to view your execution results"}
                 </div>
               </div>
             </div>
