@@ -77,7 +77,7 @@ export default function BattlePage() {
   // ── ACTIVE MATCH: full-screen takeover (no navbar / hero) ──────────────────
   if (matchInfo && user) {
     return (
-      <div style={{ minHeight: '100vh', background: '#050508', color: '#fff', padding: '20px' }}>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#050508', color: '#fff', overflow: 'hidden' }}>
         <ActiveMatchView
           socket={socket}
           matchInfo={matchInfo}
