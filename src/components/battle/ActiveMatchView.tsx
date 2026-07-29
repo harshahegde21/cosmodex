@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
+import Editor, { Monaco } from '@monaco-editor/react';
 
 const STARTERS: Record<string, string> = {
   python: "# Write your solution here\n",
@@ -405,15 +406,13 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
     return () => clearTimeout(timer);
   }, [code, isMcq, socket, matchInfo.roomId, userId]);
 
-  // Problem management: Try backend fetch; fallback asynchronously (FIX: no synchronous setState in effect body)
+  // Problem management: Fetch problem details if valid ID provided, dependent ONLY on problemId
+  const myPlayer = codeState?.players?.[userId];
+  const currentStage = myPlayer?.currentStage ?? codeState?.currentStage ?? 1;
+  const problemId = codeState?.problems?.[currentStage - 1];
+
   useEffect(() => {
-    if (isMcq) return;
-
-    const myPlayer = codeState?.players?.[userId];
-    const currentStage = myPlayer?.currentStage ?? codeState?.currentStage ?? 1;
-    const problemId = codeState?.problems?.[currentStage - 1];
-
-    if (!problemId) return;
+    if (isMcq || !problemId || problemId.startsWith('mock-')) return;
 
     let ignore = false;
 
@@ -430,15 +429,14 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
           setRunResult(null);
         }
       })
-      .catch((err) => {
-        if (ignore) return;
-        console.log('[ActiveMatchView] Backend problem unavailable:', err.message);
+      .catch(() => {
+        // Silently fallback to local problem details if API fails
       });
 
     return () => {
       ignore = true;
     };
-  }, [codeState, userId, isMcq]);
+  }, [problemId, isMcq]);
 
   const handleForfeit = () => {
     if (socket && matchInfo.roomId) {
@@ -878,14 +876,44 @@ export default function ActiveMatchView({ socket, matchInfo, userId, username, o
                 <span className="arena-char-count">{code.length} chars</span>
               </div>
 
-              {/* Code Textarea */}
-              <textarea
-                className="arena-code-editor flex-1 w-full"
-                placeholder="# Write your solution here..."
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                spellCheck={false}
-              />
+              {/* Monaco Code Editor */}
+              <div className="flex-1 w-full min-h-[200px] overflow-hidden py-2 bg-black">
+                <Editor
+                  height="100%"
+                  language={language}
+                  theme="pure-black"
+                  beforeMount={(monaco: Monaco) => {
+                    monaco.editor.defineTheme('pure-black', {
+                      base: 'vs-dark',
+                      inherit: true,
+                      rules: [],
+                      colors: {
+                        'editor.background': '#000000',
+                        'editorGutter.background': '#000000',
+                        'editor.lineHighlightBackground': '#0a0a0a',
+                      },
+                    });
+                  }}
+                  onMount={(_editor: unknown, monaco: Monaco) => {
+                    monaco.editor.setTheme('pure-black');
+                  }}
+                  value={code}
+                  onChange={(val: string | undefined) => setCode(val || '')}
+                  options={{
+                    minimap: { enabled: false }, // Hides the minimap to match the UI in image_8c7941.png
+                    fontSize: 14,
+                    wordWrap: "on",
+                    scrollBeyondLastLine: false,
+                    // THE TYPING FIXES:
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    autoIndent: 'full',
+                    formatOnType: true,
+                    tabSize: 4,
+                    insertSpaces: true,
+                  }}
+                />
+              </div>
 
               {/* Actions Bar */}
               <div className="arena-actions-bar">
