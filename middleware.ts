@@ -5,6 +5,7 @@ const ROLE_ROUTES = {
   '/super-admin': ['super_admin'],
   '/learning-admin': ['super_admin', 'learning_admin'],
   '/arena-admin': ['super_admin', 'arena_admin'],
+  '/battle-admin': ['super_admin', 'arena_admin'],
   '/dashboard': ['student', 'super_admin', 'learning_admin', 'arena_admin'],
 }
 
@@ -24,12 +25,31 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 1. Unauthenticated users hitting protected routes
+  // Admin-scoped routes — always redirect to /admin login page if not authenticated or unauthorized
+  const ADMIN_ONLY_ROUTES = ['/super-admin', '/learning-admin', '/arena-admin', '/battle-admin']
+  const isAdminRoute = ADMIN_ONLY_ROUTES.some(r => path.startsWith(r))
+
+  if (isAdminRoute) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/admin', request.url))
+    }
+    const userRole = user.role || 'student'
+    const matchingAdminRoute = ADMIN_ONLY_ROUTES.find(r => path.startsWith(r))
+    if (matchingAdminRoute) {
+      const allowedRoles = ROLE_ROUTES[matchingAdminRoute as keyof typeof ROLE_ROUTES]
+      if (!allowedRoles || !allowedRoles.includes(userRole)) {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      }
+    }
+    return NextResponse.next()
+  }
+
+  // 1. Unauthenticated users hitting other protected routes (e.g. /dashboard)
   const isProtectedRoute = Object.keys(ROLE_ROUTES).some(route => path.startsWith(route))
   if (!user && isProtectedRoute) {
     const redirectUrl = new URL('/onboarding', request.url)
-    redirectUrl.searchParams.set('mode', 'login') // Go straight to login form
-    redirectUrl.searchParams.set('next', path)    // Store intent for post-login redirection
+    redirectUrl.searchParams.set('mode', 'login')
+    redirectUrl.searchParams.set('next', path)
     return NextResponse.redirect(redirectUrl)
   }
 
@@ -38,16 +58,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // 3. RBAC Enforcement
+  // 3. RBAC Enforcement for non-admin protected routes
   if (user && isProtectedRoute) {
     const userRole = user.role || 'student'
-    
-    // Find the matching route rule
     const matchingRoute = Object.keys(ROLE_ROUTES).find(route => path.startsWith(route))
-    
     if (matchingRoute) {
       const allowedRoles = ROLE_ROUTES[matchingRoute as keyof typeof ROLE_ROUTES]
-      
       if (!allowedRoles.includes(userRole)) {
         return NextResponse.redirect(new URL('/unauthorized', request.url))
       }
